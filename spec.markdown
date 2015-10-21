@@ -222,7 +222,7 @@ Digests may be generated using any number of utilities. [OpenSSL][], for
 example, is quite commonly available. The example in this section is the
 result of the following command line:
 
-    echo -n "alert('Hello, world.');" | openssl dgst -sha384 -binary | openssl enc -base64 -A
+    echo -n "alert('Hello, world.');" | openssl dgst -sha384 -binary | openssl base64 -A
 
 [request]: https://fetch.spec.whatwg.org/#concept-request-integrity-metadata
 [csp2-section42]: http://www.w3.org/TR/CSP2/#source-list-syntax

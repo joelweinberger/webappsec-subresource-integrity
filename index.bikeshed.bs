@@ -1,0 +1,19 @@
+<pre class="metadata">
+Title: Subresource Integrity
+Status: ED
+ED: https://w3c.github.io/webappsec-subresource-integrity/
+TR: http://www.w3.org/TR/SRI/
+Shortname: SRI
+Level: 1
+Editor: Devdatta Akhawe, Dropbox Inc., dev.akhawe@gmail.com
+Editor: Frederik Braun 68466, Mozilla, fbraun@mozilla.com
+Editor: Francois Marier, Mozilla, francois@mozilla.com
+Editor: Joel Weinberger, Google Inc., jww@google.com
+Abstract:
+  This specification defines a mechanism by which user agents may verify that a
+  fetched resource has been delivered without unexpected manipulation.
+Group: webappsec
+Indent: 2
+Version History: https://github.com/w3c/webappsec-subresource-integrity/commits/gh-pages
+!Participate: <a href="https://github.com/w3c/webappsec-subresource-integrity/issues/new">File a bug </a> (<a href="https://github.com/w3c/webappsec-subresource-integrity/issues">open issues</a>)
+</pre>

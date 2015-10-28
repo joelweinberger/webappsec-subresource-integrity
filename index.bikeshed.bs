@@ -36,15 +36,16 @@ Sites and applications on the web are rarely composed of resources from only a
 single origin. For example, authors pull scripts and styles from a wide variety
 of services and content delivery networks, and must trust that the delivered
 representation is, in fact, what they expected to load. If an attacker can trick
-a user into downloading content from a hostile server (via DNS poisoning, or
-other such means), the author has no recourse. Likewise, an attacker who can
-replace the file on the CDN server has the ability to inject arbitrary content.
+a user into downloading content from a hostile server (via DNS [[RFC1035]]
+poisoning, or other such means), the author has no recourse. Likewise, an
+attacker who can replace the file on the Content Delivery Network (CDN) server
+has the ability to inject arbitrary content.
 
-Delivering resources over a secure channel mitigates some of this risk: with
-TLS, HTTP Strict Transport Security (HSTS) [[RFC6797]], and Public Key Pinning
-[[RFC7469]], a user agent can be fairly certain that it is indeed speaking with
-the server it believes it's talking to. These mechanisms, however, authenticate
-<em>only</em> the server, <em>not</em> the content. An attacker (or
+Delivering resources over a secure channel mitigates some of this risk: with TLS
+[[TLS]], HTTP Strict Transport Security (HSTS) [[RFC6797]], and Public Key
+Pinning [[RFC7469]], a user agent can be fairly certain that it is indeed
+speaking with the server it believes it's talking to. These mechanisms, however,
+authenticate <em>only</em> the server, <em>not</em> the content. An attacker (or
 administrator) with access to the server can manipulate content with impunity.
 Ideally, authors would not only be able to pin the keys of a server, but also
 pin the <em>content</em>, ensuring that an exact representation of a resource,
@@ -75,5 +76,5 @@ This example can be communicated to a user agent by adding the hash to a
 
 Scripts, of course, are not the only response type which would benefit from
 integrity validation. The scheme specified here also applies to
-<code>link</code> and future versions of the specification are likely to expand
+<code>link</code> and future versions of this specification are likely to expand
 this coverage.

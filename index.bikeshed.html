@@ -993,7 +993,7 @@
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="http://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Subresource Integrity</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2015-10-22">22 October 2015</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2015-10-28">28 October 2015</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1074,12 +1074,13 @@ fetched resource has been delivered without unexpected manipulation.</p>
 single origin. For example, authors pull scripts and styles from a wide variety
 of services and content delivery networks, and must trust that the delivered
 representation is, in fact, what they expected to load. If an attacker can trick
-a user into downloading content from a hostile server (via DNS poisoning, or
-other such means), the author has no recourse. Likewise, an attacker who can
-replace the file on the CDN server has the ability to inject arbitrary content.</p>
-    <p>Delivering resources over a secure channel mitigates some of this risk: with
-TLS, HTTP Strict Transport Security (HSTS) <a data-link-type="biblio" href="#biblio-rfc6797">[RFC6797]</a>, and Public Key Pinning <a data-link-type="biblio" href="#biblio-rfc7469">[RFC7469]</a>, a user agent can be fairly certain that it is indeed speaking with
-the server it believes it’s talking to. These mechanisms, however, authenticate <em>only</em> the server, <em>not</em> the content. An attacker (or
+a user into downloading content from a hostile server (via DNS <a data-link-type="biblio" href="#biblio-rfc1035">[RFC1035]</a> poisoning, or other such means), the author has no recourse. Likewise, an
+attacker who can replace the file on the Content Delivery Network (CDN) server
+has the ability to inject arbitrary content.</p>
+    <p>Delivering resources over a secure channel mitigates some of this risk: with TLS <a data-link-type="biblio" href="#biblio-tls">[TLS]</a>, HTTP Strict Transport Security (HSTS) <a data-link-type="biblio" href="#biblio-rfc6797">[RFC6797]</a>, and Public Key
+Pinning <a data-link-type="biblio" href="#biblio-rfc7469">[RFC7469]</a>, a user agent can be fairly certain that it is indeed
+speaking with the server it believes it’s talking to. These mechanisms, however,
+authenticate <em>only</em> the server, <em>not</em> the content. An attacker (or
 administrator) with access to the server can manipulate content with impunity.
 Ideally, authors would not only be able to pin the keys of a server, but also
 pin the <em>content</em>, ensuring that an exact representation of a resource,
@@ -1101,7 +1102,7 @@ substitute malicious content.</p>
 </pre>
     </div>
     <p>Scripts, of course, are not the only response type which would benefit from
-integrity validation. The scheme specified here also applies to <code>link</code> and future versions of the specification are likely to expand
+integrity validation. The scheme specified here also applies to <code>link</code> and future versions of this specification are likely to expand
 this coverage.</p>
    </section>
   </main>
@@ -1144,6 +1145,10 @@ this coverage.</p>
   </dl>
   <h3 class="no-num heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
+   <dt id="biblio-tls"><a class="self-link" href="#biblio-tls"></a>[TLS]
+   <dd>T. Dierks; E. Rescorla. <a href="https://tools.ietf.org/html/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>. August 2008. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc5246">https://tools.ietf.org/html/rfc5246</a>
+   <dt id="biblio-rfc1035"><a class="self-link" href="#biblio-rfc1035"></a>[RFC1035]
+   <dd>P.V. Mockapetris. <a href="https://tools.ietf.org/html/rfc1035">Domain names - implementation and specification</a>. November 1987. Internet Standard. URL: <a href="https://tools.ietf.org/html/rfc1035">https://tools.ietf.org/html/rfc1035</a>
    <dt id="biblio-rfc6797"><a class="self-link" href="#biblio-rfc6797"></a>[RFC6797]
    <dd>J. Hodges; C. Jackson; A. Barth. <a href="https://tools.ietf.org/html/rfc6797">HTTP Strict Transport Security (HSTS)</a>. November 2012. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6797">https://tools.ietf.org/html/rfc6797</a>
    <dt id="biblio-rfc7469"><a class="self-link" href="#biblio-rfc7469"></a>[RFC7469]

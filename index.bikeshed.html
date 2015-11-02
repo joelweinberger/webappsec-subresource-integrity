@@ -993,7 +993,7 @@
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="http://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Subresource Integrity</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2015-10-28">28 October 2015</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2015-11-02">2 November 2015</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1051,12 +1051,26 @@ fetched resource has been delivered without unexpected manipulation.</p>
   <h2 class="no-num no-toc no-ref heading settled" id="contents"><span class="content">Table of Contents</span></h2>
   <div data-fill-with="table-of-contents" role="navigation">
    <ul class="toc" role="directory">
-    <li><a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a>
+    <li>
+     <a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a>
+     <ul class="toc">
+      <li><a href="#goals"><span class="secno">1.1</span> <span class="content">Goals</span></a>
+      <li>
+       <a href="#examples"><span class="secno">1.2</span> <span class="content">Use Cases/Examples</span></a>
+       <ul class="toc">
+        <li><a href="#resource-integrity"><span class="secno">1.2.1</span> <span class="content">Resource Integrity</span></a>
+       </ul>
+     </ul>
     <li>
      <a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ul class="toc">
       <li><a href="#conventions"><span class="secno"></span> <span class="content">Document conventions</span></a>
       <li><a href="#conformant-algorithms"><span class="secno"></span> <span class="content">Conformant Algorithms</span></a>
+     </ul>
+    <li>
+     <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
+     <ul class="toc">
+      <li><a href="#index-defined-here"><span class="secno"></span> <span class="content">Terms defined by this specification</span></a>
      </ul>
     <li>
      <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
@@ -1067,17 +1081,16 @@ fetched resource has been delivered without unexpected manipulation.</p>
    </ul>
   </div>
   <main>
-   <section>
-    <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
-    <p><em> This section is not normative.</em></p>
-    <p>Sites and applications on the web are rarely composed of resources from only a
+   <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
+   <p><em> This section is not normative.</em></p>
+   <p>Sites and applications on the web are rarely composed of resources from only a
 single origin. For example, authors pull scripts and styles from a wide variety
 of services and content delivery networks, and must trust that the delivered
 representation is, in fact, what they expected to load. If an attacker can trick
 a user into downloading content from a hostile server (via DNS <a data-link-type="biblio" href="#biblio-rfc1035">[RFC1035]</a> poisoning, or other such means), the author has no recourse. Likewise, an
 attacker who can replace the file on the Content Delivery Network (CDN) server
 has the ability to inject arbitrary content.</p>
-    <p>Delivering resources over a secure channel mitigates some of this risk: with TLS <a data-link-type="biblio" href="#biblio-tls">[TLS]</a>, HTTP Strict Transport Security (HSTS) <a data-link-type="biblio" href="#biblio-rfc6797">[RFC6797]</a>, and Public Key
+   <p>Delivering resources over a secure channel mitigates some of this risk: with TLS <a data-link-type="biblio" href="#biblio-tls">[TLS]</a>, HTTP Strict Transport Security (HSTS) <a data-link-type="biblio" href="#biblio-rfc6797">[RFC6797]</a>, and Public Key
 Pinning <a data-link-type="biblio" href="#biblio-rfc7469">[RFC7469]</a>, a user agent can be fairly certain that it is indeed
 speaking with the server it believes it’s talking to. These mechanisms, however,
 authenticate <em>only</em> the server, <em>not</em> the content. An attacker (or
@@ -1085,7 +1098,7 @@ administrator) with access to the server can manipulate content with impunity.
 Ideally, authors would not only be able to pin the keys of a server, but also
 pin the <em>content</em>, ensuring that an exact representation of a resource,
 and <em>only</em> that representation, loads and executes.</p>
-    <p>This document specifies such a validation scheme, extending two HTML elements
+   <p>This document specifies such a validation scheme, extending two HTML elements
 with an <code>integrity</code> attribute that contains a cryptographic hash of
 the representation of the resource the author expects to load. For instance, an
 author may wish to load some framework from a shared server rather than hosting
@@ -1093,18 +1106,67 @@ it on their own origin. Specifying that the <em>expected</em> SHA-384 hash of <c
 matches that expected hash before executing the JavaScript it contains. This
 integrity verification significantly reduces the risk that an attacker can
 substitute malicious content.</p>
-    <p>This example can be communicated to a user agent by adding the hash to a <code>script</code> element, like so:</p>
-    <div class="example" id="example-2cf8cb15">
-     <a class="self-link" href="#example-2cf8cb15"></a> 
+   <p>This example can be communicated to a user agent by adding the hash to a <code>script</code> element, like so:</p>
+   <div class="example" id="example-2cf8cb15">
+    <a class="self-link" href="#example-2cf8cb15"></a> 
 <pre>&lt;script src="https://example.com/example-framework.js"
         integrity="sha384-Li9vy3DqF8tnTXuiaAJuML3ky+er10rcgNR/VqsVpcw+ThHmYcwiB1pbOxEbzJr7"
         crossorigin="anonymous">&lt;/script>
 </pre>
-    </div>
-    <p>Scripts, of course, are not the only response type which would benefit from
+   </div>
+   <p>Scripts, of course, are not the only response type which would benefit from
 integrity validation. The scheme specified here also applies to <code>link</code> and future versions of this specification are likely to expand
 this coverage.</p>
-   </section>
+   <h3 class="heading settled" data-level="1.1" id="goals"><span class="secno">1.1. </span><span class="content">Goals</span><a class="self-link" href="#goals"></a></h3>
+   <ol>
+    <li data-md="">
+     <p>Compromise of a third-party service should not automatically mean
+  compromise of every site which includes its scripts. Content authors
+  will have a mechanism by which they can specify expectations for
+  content they load, meaning for example that they could load a
+  _specific_ script, and not _any_ script that happens to have a
+  particular URL.</p>
+    <li data-md="">
+     <p>The verification mechanism should have error-reporting functionality which
+  would inform the author that an invalid response was received.</p>
+   </ol>
+   <h3 class="heading settled" data-level="1.2" id="examples"><span class="secno">1.2. </span><span class="content">Use Cases/Examples</span><a class="self-link" href="#examples"></a></h3>
+   <h4 class="heading settled" data-level="1.2.1" id="resource-integrity"><span class="secno">1.2.1. </span><span class="content">Resource Integrity</span><a class="self-link" href="#resource-integrity"></a></h4>
+   <ul>
+    <li data-md="">
+     <p>An author wishes to use a content delivery network to improve performance
+  for globally-distributed users. It is important, however, to ensure that
+  the CDN’s servers deliver _only_ the code the author expects them to
+  deliver. To mitigate the risk that a CDN compromise (or unexpectedly
+  malicious behavior) would change that site in unfortunate ways, the
+  following <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> is added to the `link` element included
+  on the page:</p>
+     <div class="example" id="example-f65c13cd">
+      <a class="self-link" href="#example-f65c13cd"></a> 
+<pre>&lt;link rel="stylesheet" href="https://site53.example.net/style.css"
+      integrity="sha384-+/M6kredJcxdsqkczBUjMLvqyHb1K/JThDXWsBVxMEeZHEaMKEOEct339VItX1zB"
+      crossorigin="anonymous">
+</pre>
+     </div>
+    <li data-md="">
+     <p>An author wants to include JavaScript provided by a third-party
+  analytics service. To ensure that only the code that has been carefully
+  reviewed is executed, the author generates <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> for
+  the script, and adds it to the `script` element:</p>
+     <div class="example" id="example-dbcf36cc">
+      <a class="self-link" href="#example-dbcf36cc"></a> 
+<pre>&lt;script src="https://analytics-r-us.example.com/v1.0/include.js"
+        integrity="sha384-MBO5IDfYaE6c6Aao94oZrIOiC6CGiSN2n4QUbHNPhzk5Xhm0djZLQqTpL0HzTUxk"
+        crossorigin="anonymous">&lt;/script>
+</pre>
+     </div>
+    <li data-md="">
+     <p>A user agent wishes to ensure that JavaScript code running in high-privilege
+  HTML contexts (for example, a browser’s New Tab page) aren’t manipulated
+  before display. <a data-link-type="dfn" href="#integrity-metadata">Integrity metadata</a> mitigates the risk that altered
+  JavaScript will run in these pages' high-privilege contexts.</p>
+   </ul>
+   <p>Insert def for <dfn data-dfn-type="dfn" data-noexport="" id="integrity-metadata">integrity metadata<a class="self-link" href="#integrity-metadata"></a></dfn>.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -1137,6 +1199,11 @@ this coverage.</p>
     particular, the algorithms defined in this specification are intended to
     be easy to understand and are not intended to be performant. Implementers
     are encouraged to optimize.</p>
+  <h2 class="no-num heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="no-num heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
+  <ul class="indexlist">
+   <li><a href="#integrity-metadata">integrity metadata</a><span>, in §1.2.1</span>
+  </ul>
   <h2 class="no-num heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>

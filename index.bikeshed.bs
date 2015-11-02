@@ -27,8 +27,7 @@ spec: RFC7469; urlPrefix: https://tools.ietf.org/html/rfc7469
     text: Public Key Pinning; url: section-1
 </pre>
 
-<section>
-<h2 id="intro">Introduction</h2>
+# Introduction # {#intro}
 
 <em> This section is not normative.</em>
 
@@ -78,3 +77,56 @@ Scripts, of course, are not the only response type which would benefit from
 integrity validation. The scheme specified here also applies to
 <code>link</code> and future versions of this specification are likely to expand
 this coverage.
+
+
+## Goals ## {#goals}
+
+1.  Compromise of a third-party service should not automatically mean
+    compromise of every site which includes its scripts. Content authors
+    will have a mechanism by which they can specify expectations for
+    content they load, meaning for example that they could load a
+    _specific_ script, and not _any_ script that happens to have a
+    particular URL.
+
+2.  The verification mechanism should have error-reporting functionality which
+    would inform the author that an invalid response was received.
+
+## Use Cases/Examples ## {#examples}
+
+### Resource Integrity ### {#resource-integrity}
+
+*   An author wishes to use a content delivery network to improve performance
+    for globally-distributed users. It is important, however, to ensure that
+    the CDN's servers deliver _only_ the code the author expects them to
+    deliver. To mitigate the risk that a CDN compromise (or unexpectedly
+    malicious behavior) would change that site in unfortunate ways, the
+    following <a>integrity metadata</a> is added to the `link` element included
+    on the page:
+
+    <div class="example">
+      <pre>
+        &lt;link rel="stylesheet" href="https://site53.example.net/style.css"
+              integrity="sha384-+/M6kredJcxdsqkczBUjMLvqyHb1K/JThDXWsBVxMEeZHEaMKEOEct339VItX1zB"
+              crossorigin="anonymous">
+      </pre>
+    </div>
+
+*   An author wants to include JavaScript provided by a third-party
+    analytics service. To ensure that only the code that has been carefully
+    reviewed is executed, the author generates <a>integrity metadata</a> for
+    the script, and adds it to the `script` element:
+
+    <div class="example">
+      <pre>
+        &lt;script src="https://analytics-r-us.example.com/v1.0/include.js"
+                integrity="sha384-MBO5IDfYaE6c6Aao94oZrIOiC6CGiSN2n4QUbHNPhzk5Xhm0djZLQqTpL0HzTUxk"
+                crossorigin="anonymous">&lt;/script>
+      </pre>
+    </div>
+
+*   A user agent wishes to ensure that JavaScript code running in high-privilege
+    HTML contexts (for example, a browser's New Tab page) aren't manipulated
+    before display. <a>Integrity metadata</a> mitigates the risk that altered
+    JavaScript will run in these pages' high-privilege contexts.
+
+Insert def for <dfn>integrity metadata</dfn>.

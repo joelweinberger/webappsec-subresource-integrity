@@ -16,8 +16,18 @@ Group: webappsec
 Indent: 2
 Version History: https://github.com/w3c/webappsec-subresource-integrity/commits/gh-pages
 !Participate: <a href="https://github.com/w3c/webappsec-subresource-integrity/issues/new">File a bug </a> (<a href="https://github.com/w3c/webappsec-subresource-integrity/issues">open issues</a>)
+Markup Shorthands: css off, markdown on
 </pre>
 <pre class="anchors">
+spec: ABNF; urlPrefix: https://tools.ietf.org/html/rfc5234
+  type: dfn
+    text: VCHAR; url: appendix-B.1
+
+spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
+  type: dfn
+    urlPrefix: infrastructure.html
+      text: White_Space characters; url: #space-character
+
 spec: RFC6797; urlPrefix: https://tools.ietf.org/html/rfc6797
   type: dfn
     text: Strict-Transport-Security; url: section-6.1
@@ -25,7 +35,32 @@ spec: RFC6797; urlPrefix: https://tools.ietf.org/html/rfc6797
 spec: RFC7469; urlPrefix: https://tools.ietf.org/html/rfc7469
   type: dfn
     text: Public Key Pinning; url: section-1
+
+spec: SHA2; urlPrefix: http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf
+  type: dfn
+    text: SHA-2; url: #
+    text: SHA-256; url: #
+    text: SHA-384; url: #
+    text: SHA-512; url: #
 </pre>
+
+<pre class="biblio">
+{
+  "SecureContexts": {
+    "authors": [ "Mike West", "Yan Zhu" ],
+    "href": "http://www.w3.org/TR/powerful-features/",
+    "title": "Privileged Contexts",
+    "status": "WD",
+    "publisher": "W3C"
+  },
+  "SHA2": {
+    "href": "http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf",
+    "title": "FIPS PUB 180-4, Secure Hash Standard"
+  }
+}
+</pre>
+
+<!-- ####################################################################### -->
 
 # Introduction # {#intro}
 
@@ -41,29 +76,30 @@ attacker who can replace the file on the Content Delivery Network (CDN) server
 has the ability to inject arbitrary content.
 
 Delivering resources over a secure channel mitigates some of this risk: with TLS
-[[TLS]], HTTP Strict Transport Security (HSTS) [[RFC6797]], and Public Key
-Pinning [[RFC7469]], a user agent can be fairly certain that it is indeed
-speaking with the server it believes it's talking to. These mechanisms, however,
-authenticate <em>only</em> the server, <em>not</em> the content. An attacker (or
-administrator) with access to the server can manipulate content with impunity.
-Ideally, authors would not only be able to pin the keys of a server, but also
-pin the <em>content</em>, ensuring that an exact representation of a resource,
-and <em>only</em> that representation, loads and executes.
+[[TLS]], <a lt="Strict-Transport-Security">HTTP Strict Transport Security (HSTS)
+</a> [[RFC6797]], and <a>Public Key Pinning</a> [[RFC7469]], a user agent can be
+fairly certain that it is indeed speaking with the server it believes it's
+talking to. These mechanisms, however, authenticate <em>only</em> the server,
+<em>not</em> the content. An attacker (or administrator) with access to the
+server can manipulate content with impunity.  Ideally, authors would not only be
+able to pin the keys of a server, but also pin the <em>content</em>, ensuring
+that an exact representation of a resource, and <em>only</em> that
+representation, loads and executes.
 
 This document specifies such a validation scheme, extending two HTML elements
-with an <code>integrity</code> attribute that contains a cryptographic hash of
+with an `integrity` attribute that contains a cryptographic hash of
 the representation of the resource the author expects to load. For instance, an
 author may wish to load some framework from a shared server rather than hosting
 it on their own origin. Specifying that the <em>expected</em> SHA-384 hash of
-<code>https://example.com/example-framework.js</code> is
-<code>Li9vy3DqF8tnTXuiaAJuML3ky+er10rcgNR/VqsVpcw+ThHmYcwiB1pbOxEbzJr7</code>
+`https://example.com/example-framework.js` is
+`Li9vy3DqF8tnTXuiaAJuML3ky+er10rcgNR/VqsVpcw+ThHmYcwiB1pbOxEbzJr7`
 means that the user agent can verify that the data it loads from that URL
 matches that expected hash before executing the JavaScript it contains. This
 integrity verification significantly reduces the risk that an attacker can
 substitute malicious content.
 
 This example can be communicated to a user agent by adding the hash to a
-<code>script</code> element, like so:
+`script` element, like so:
 
 <div class="example">
   <pre>
@@ -75,7 +111,7 @@ This example can be communicated to a user agent by adding the hash to a
 
 Scripts, of course, are not the only response type which would benefit from
 integrity validation. The scheme specified here also applies to
-<code>link</code> and future versions of this specification are likely to expand
+`link` and future versions of this specification are likely to expand
 this coverage.
 
 
@@ -85,7 +121,7 @@ this coverage.
     compromise of every site which includes its scripts. Content authors
     will have a mechanism by which they can specify expectations for
     content they load, meaning for example that they could load a
-    _specific_ script, and not _any_ script that happens to have a
+    <em>specific</em> script, and not <em>any</em> script that happens to have a
     particular URL.
 
 2.  The verification mechanism should have error-reporting functionality which
@@ -97,11 +133,11 @@ this coverage.
 
 *   An author wishes to use a content delivery network to improve performance
     for globally-distributed users. It is important, however, to ensure that
-    the CDN's servers deliver _only_ the code the author expects them to
+    the CDN's servers deliver <em>only</em> the code the author expects them to
     deliver. To mitigate the risk that a CDN compromise (or unexpectedly
     malicious behavior) would change that site in unfortunate ways, the
-    following <a>integrity metadata</a> is added to the `link` element included
-    on the page:
+    following <a>integrity metadata</a> is added to the `link`
+    element included on the page:
 
     <div class="example">
       <pre>
@@ -128,5 +164,47 @@ this coverage.
     HTML contexts (for example, a browser's New Tab page) aren't manipulated
     before display. <a>Integrity metadata</a> mitigates the risk that altered
     JavaScript will run in these pages' high-privilege contexts.
+
+<!-- ####################################################################### -->
+
+# Key Concepts and Terminology # {#terms}
+
+This section defines several terms used throughout the document.
+
+The term <dfn>digest</dfn> refers to the <a lt="base64 encoding">base64
+encoded</a> result of executing a cryptographic hash function on an arbitrary
+block of data.
+
+The term <dfn>origin</dfn> is defined in the Origin specification.
+[[!RFC6454]]
+
+The terms <dfn>secure document</dfn> and
+<dfn>secure context</dfn> are defined in
+<a href="http://www.w3.org/TR/powerful-features/#terms">Section 2 of the Secure
+Contexts specification</a>. [[!SecureContexts]] An example of a secure document
+is a document loaded over HTTPS. A counterexample is a document loaded over
+HTTP.
+
+The <dfn>representation data</dfn> and <dfn>content encoding</dfn> of a resource
+are defined by <a href="https://tools.ietf.org/html/rfc7231#section-3">Section 3
+of RFC 7231</a>. [[!RFC7231]]
+
+A <dfn>base64 encoding</dfn> is defined in
+<a href="https://tools.ietf.org/html/rfc4648#section-4">Section 4 of RFC
+4648</a>. [[!RFC4648]]
+
+<a>SHA-256</a>, <a>SHA-384</a>, and <a>SHA-512</a> are part
+of the <a>SHA-2</a> set of cryptographic hash functions defined by the
+NIST. [[!SHA2]]
+
+## Grammatical Concepts ## {#grammar}
+The Augmented Backus-Naur Form (ABNF) notation used in this document is
+specified in RFC5234. [[!ABNF]]
+
+<a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">Appendix B.1 of ABNF
+</a> defines <a>`VCHAR`</a> (printing characters). [[!ABNF]]
+
+<dfn>`WSP`</dfn>  are defined in the HTML 5 specification as <a>`White_Space
+characters`</a>. [[!HTML5]]
 
 Insert def for <dfn>integrity metadata</dfn>.

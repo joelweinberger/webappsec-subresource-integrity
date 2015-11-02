@@ -1062,6 +1062,11 @@ fetched resource has been delivered without unexpected manipulation.</p>
        </ul>
      </ul>
     <li>
+     <a href="#terms"><span class="secno">2</span> <span class="content">Key Concepts and Terminology</span></a>
+     <ul class="toc">
+      <li><a href="#grammar"><span class="secno">2.1</span> <span class="content">Grammatical Concepts</span></a>
+     </ul>
+    <li>
      <a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ul class="toc">
       <li><a href="#conventions"><span class="secno"></span> <span class="content">Document conventions</span></a>
@@ -1071,6 +1076,7 @@ fetched resource has been delivered without unexpected manipulation.</p>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ul class="toc">
       <li><a href="#index-defined-here"><span class="secno"></span> <span class="content">Terms defined by this specification</span></a>
+      <li><a href="#index-defined-elsewhere"><span class="secno"></span> <span class="content">Terms defined by reference</span></a>
      </ul>
     <li>
      <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
@@ -1090,14 +1096,13 @@ representation is, in fact, what they expected to load. If an attacker can trick
 a user into downloading content from a hostile server (via DNS <a data-link-type="biblio" href="#biblio-rfc1035">[RFC1035]</a> poisoning, or other such means), the author has no recourse. Likewise, an
 attacker who can replace the file on the Content Delivery Network (CDN) server
 has the ability to inject arbitrary content.</p>
-   <p>Delivering resources over a secure channel mitigates some of this risk: with TLS <a data-link-type="biblio" href="#biblio-tls">[TLS]</a>, HTTP Strict Transport Security (HSTS) <a data-link-type="biblio" href="#biblio-rfc6797">[RFC6797]</a>, and Public Key
-Pinning <a data-link-type="biblio" href="#biblio-rfc7469">[RFC7469]</a>, a user agent can be fairly certain that it is indeed
-speaking with the server it believes it’s talking to. These mechanisms, however,
-authenticate <em>only</em> the server, <em>not</em> the content. An attacker (or
-administrator) with access to the server can manipulate content with impunity.
-Ideally, authors would not only be able to pin the keys of a server, but also
-pin the <em>content</em>, ensuring that an exact representation of a resource,
-and <em>only</em> that representation, loads and executes.</p>
+   <p>Delivering resources over a secure channel mitigates some of this risk: with TLS <a data-link-type="biblio" href="#biblio-tls">[TLS]</a>, <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc6797#section-6.1">HTTP Strict Transport Security (HSTS) </a> <a data-link-type="biblio" href="#biblio-rfc6797">[RFC6797]</a>, and <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc7469#section-1">Public Key Pinning</a> <a data-link-type="biblio" href="#biblio-rfc7469">[RFC7469]</a>, a user agent can be
+fairly certain that it is indeed speaking with the server it believes it’s
+talking to. These mechanisms, however, authenticate <em>only</em> the server, <em>not</em> the content. An attacker (or administrator) with access to the
+server can manipulate content with impunity.  Ideally, authors would not only be
+able to pin the keys of a server, but also pin the <em>content</em>, ensuring
+that an exact representation of a resource, and <em>only</em> that
+representation, loads and executes.</p>
    <p>This document specifies such a validation scheme, extending two HTML elements
 with an <code>integrity</code> attribute that contains a cryptographic hash of
 the representation of the resource the author expects to load. For instance, an
@@ -1123,8 +1128,7 @@ this coverage.</p>
      <p>Compromise of a third-party service should not automatically mean
   compromise of every site which includes its scripts. Content authors
   will have a mechanism by which they can specify expectations for
-  content they load, meaning for example that they could load a
-  _specific_ script, and not _any_ script that happens to have a
+  content they load, meaning for example that they could load a <em>specific</em> script, and not <em>any</em> script that happens to have a
   particular URL.</p>
     <li data-md="">
      <p>The verification mechanism should have error-reporting functionality which
@@ -1136,11 +1140,10 @@ this coverage.</p>
     <li data-md="">
      <p>An author wishes to use a content delivery network to improve performance
   for globally-distributed users. It is important, however, to ensure that
-  the CDN’s servers deliver _only_ the code the author expects them to
+  the CDN’s servers deliver <em>only</em> the code the author expects them to
   deliver. To mitigate the risk that a CDN compromise (or unexpectedly
   malicious behavior) would change that site in unfortunate ways, the
-  following <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> is added to the `link` element included
-  on the page:</p>
+  following <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> is added to the <code>link</code> element included on the page:</p>
      <div class="example" id="example-f65c13cd">
       <a class="self-link" href="#example-f65c13cd"></a> 
 <pre>&lt;link rel="stylesheet" href="https://site53.example.net/style.css"
@@ -1152,7 +1155,7 @@ this coverage.</p>
      <p>An author wants to include JavaScript provided by a third-party
   analytics service. To ensure that only the code that has been carefully
   reviewed is executed, the author generates <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> for
-  the script, and adds it to the `script` element:</p>
+  the script, and adds it to the <code>script</code> element:</p>
      <div class="example" id="example-dbcf36cc">
       <a class="self-link" href="#example-dbcf36cc"></a> 
 <pre>&lt;script src="https://analytics-r-us.example.com/v1.0/include.js"
@@ -1166,6 +1169,32 @@ this coverage.</p>
   before display. <a data-link-type="dfn" href="#integrity-metadata">Integrity metadata</a> mitigates the risk that altered
   JavaScript will run in these pages' high-privilege contexts.</p>
    </ul>
+   <h2 class="heading settled" data-level="2" id="terms"><span class="secno">2. </span><span class="content">Key Concepts and Terminology</span><a class="self-link" href="#terms"></a></h2>
+   <p>This section defines several terms used throughout the document.</p>
+   <p>The term <dfn data-dfn-type="dfn" data-noexport="" id="digest">digest<a class="self-link" href="#digest"></a></dfn> refers to the <a data-link-type="dfn" href="#base64-encoding">base64
+encoded</a> result of executing a cryptographic hash function on an arbitrary
+block of data.</p>
+   <p>The term <dfn data-dfn-type="dfn" data-noexport="" id="origin">origin<a class="self-link" href="#origin"></a></dfn> is defined in the Origin specification. <a data-link-type="biblio" href="#biblio-rfc6454">[RFC6454]</a></p>
+   <p>The terms <dfn data-dfn-type="dfn" data-noexport="" id="secure-document">secure document<a class="self-link" href="#secure-document"></a></dfn> and <dfn data-dfn-type="dfn" data-noexport="" id="secure-context">secure context<a class="self-link" href="#secure-context"></a></dfn> are defined in <a href="http://www.w3.org/TR/powerful-features/#terms">Section 2 of the Secure
+Contexts specification</a>. <a data-link-type="biblio" href="#biblio-securecontexts">[SecureContexts]</a> An example of a secure document
+is a document loaded over HTTPS. A counterexample is a document loaded over
+HTTP.</p>
+   <p>The <dfn data-dfn-type="dfn" data-noexport="" id="representation-data">representation data<a class="self-link" href="#representation-data"></a></dfn> and <dfn data-dfn-type="dfn" data-noexport="" id="content-encoding">content encoding<a class="self-link" href="#content-encoding"></a></dfn> of a resource
+are defined by <a href="https://tools.ietf.org/html/rfc7231#section-3">Section 3
+of RFC 7231</a>. <a data-link-type="biblio" href="#biblio-rfc7231">[RFC7231]</a></p>
+   <p>A <dfn data-dfn-type="dfn" data-noexport="" id="base64-encoding">base64 encoding<a class="self-link" href="#base64-encoding"></a></dfn> is defined in <a href="https://tools.ietf.org/html/rfc4648#section-4">Section 4 of RFC
+4648</a>. <a data-link-type="biblio" href="#biblio-rfc4648">[RFC4648]</a></p>
+   <p><a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-256</a>, <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-384</a>, and <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-512</a> are part
+of the <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-2</a> set of cryptographic hash functions defined by the
+NIST. <a data-link-type="biblio" href="#biblio-sha2">[SHA2]</a></p>
+   <h3 class="heading settled" data-level="2.1" id="grammar"><span class="secno">2.1. </span><span class="content">Grammatical Concepts</span><a class="self-link" href="#grammar"></a></h3>
+    The Augmented Backus-Naur Form (ABNF) notation used in this document is
+specified in RFC5234. <a data-link-type="biblio" href="#biblio-abnf">[ABNF]</a> 
+   <p><a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">Appendix B.1 of ABNF </a> defines <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc5234#appendix-B.1"><code>VCHAR</code></a> (printing characters). <a data-link-type="biblio" href="#biblio-abnf">[ABNF]</a></p>
+   <p><dfn data-dfn-type="dfn" data-noexport="" id="wsp"><code>WSP</code><a class="self-link" href="#wsp"></a></dfn> are defined in the HTML 5 specification as <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#space-character"><code>White_Space
+characters</code></a>. <a data-link-type="biblio" href="#biblio-html5">[HTML5]</a></p>
+   <p>[abnf-b1]: https://tools.ietf.org/html/rfc5234#appendix-B.1
+[space-chars]: http://www.w3.org/TR/html5/infrastructure.html#space-character</p>
    <p>Insert def for <dfn data-dfn-type="dfn" data-noexport="" id="integrity-metadata">integrity metadata<a class="self-link" href="#integrity-metadata"></a></dfn>.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
@@ -1202,13 +1231,70 @@ this coverage.</p>
   <h2 class="no-num heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="indexlist">
-   <li><a href="#integrity-metadata">integrity metadata</a><span>, in §1.2.1</span>
+   <li><a href="#base64-encoding">base64 encoding</a><span>, in §2</span>
+   <li><a href="#content-encoding">content encoding</a><span>, in §2</span>
+   <li><a href="#digest">digest</a><span>, in §2</span>
+   <li><a href="#integrity-metadata">integrity metadata</a><span>, in §2.1</span>
+   <li><a href="#origin">origin</a><span>, in §2</span>
+   <li><a href="#representation-data">representation data</a><span>, in §2</span>
+   <li><a href="#secure-context">secure context</a><span>, in §2</span>
+   <li><a href="#secure-document">secure document</a><span>, in §2</span>
+   <li><a href="#wsp">WSP</a><span>, in §2.1</span>
+  </ul>
+  <h3 class="no-num heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
+  <ul class="indexlist">
+   <li>
+    <a data-link-type="biblio" href="#biblio-abnf">[ABNF]</a> defines the following terms:
+    <ul>
+     <li><a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">vchar</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
+    <ul>
+     <li><a href="http://www.w3.org/TR/html5/infrastructure.html#space-character">white_space characters</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio" href="#biblio-rfc6797">[rfc6797]</a> defines the following terms:
+    <ul>
+     <li><a href="https://tools.ietf.org/html/rfc6797#section-6.1">strict-transport-security</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio" href="#biblio-rfc7469">[rfc7469]</a> defines the following terms:
+    <ul>
+     <li><a href="https://tools.ietf.org/html/rfc7469#section-1">public key pinning</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio" href="#biblio-sha2">[SHA2]</a> defines the following terms:
+    <ul>
+     <li><a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">sha-2</a>
+     <li><a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">sha-256</a>
+     <li><a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">sha-384</a>
+     <li><a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">sha-512</a>
+    </ul>
   </ul>
   <h2 class="no-num heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-abnf"><a class="self-link" href="#biblio-abnf"></a>[ABNF]
+   <dd>D. Crocker, Ed.; P. Overell. <a href="https://tools.ietf.org/html/rfc5234">Augmented BNF for Syntax Specifications: ABNF</a>. January 2008. Internet Standard. URL: <a href="https://tools.ietf.org/html/rfc5234">https://tools.ietf.org/html/rfc5234</a>
+   <dt id="biblio-sha2"><a class="self-link" href="#biblio-sha2"></a>[SHA2]
+   <dd><a href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">FIPS PUB 180-4, Secure Hash Standard</a>. URL: <a href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf</a>
+   <dt id="biblio-securecontexts"><a class="self-link" href="#biblio-securecontexts"></a>[SecureContexts]
+   <dd>Mike West; Yan Zhu. <a href="http://www.w3.org/TR/powerful-features/">Privileged Contexts</a>. WD. URL: <a href="http://www.w3.org/TR/powerful-features/">http://www.w3.org/TR/powerful-features/</a>
+   <dt id="biblio-html5"><a class="self-link" href="#biblio-html5"></a>[HTML5]
+   <dd>Ian Hickson; et al. <a href="http://www.w3.org/TR/html5/">HTML5</a>. 28 October 2014. REC. URL: <a href="http://www.w3.org/TR/html5/">http://www.w3.org/TR/html5/</a>
    <dt id="biblio-rfc2119"><a class="self-link" href="#biblio-rfc2119"></a>[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
+   <dt id="biblio-rfc4648"><a class="self-link" href="#biblio-rfc4648"></a>[RFC4648]
+   <dd>S. Josefsson. <a href="https://tools.ietf.org/html/rfc4648">The Base16, Base32, and Base64 Data Encodings</a>. October 2006. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc4648">https://tools.ietf.org/html/rfc4648</a>
+   <dt id="biblio-rfc6454"><a class="self-link" href="#biblio-rfc6454"></a>[RFC6454]
+   <dd>A. Barth. <a href="https://tools.ietf.org/html/rfc6454">The Web Origin Concept</a>. December 2011. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6454">https://tools.ietf.org/html/rfc6454</a>
+   <dt id="biblio-rfc6797"><a class="self-link" href="#biblio-rfc6797"></a>[RFC6797]
+   <dd>J. Hodges; C. Jackson; A. Barth. <a href="https://tools.ietf.org/html/rfc6797">HTTP Strict Transport Security (HSTS)</a>. November 2012. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6797">https://tools.ietf.org/html/rfc6797</a>
+   <dt id="biblio-rfc7231"><a class="self-link" href="#biblio-rfc7231"></a>[RFC7231]
+   <dd>R. Fielding, Ed.; J. Reschke, Ed.. <a href="https://tools.ietf.org/html/rfc7231">Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content</a>. June 2014. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7231">https://tools.ietf.org/html/rfc7231</a>
+   <dt id="biblio-rfc7469"><a class="self-link" href="#biblio-rfc7469"></a>[RFC7469]
+   <dd>C. Evans; C. Palmer; R. Sleevi. <a href="https://tools.ietf.org/html/rfc7469">Public Key Pinning Extension for HTTP</a>. April 2015. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7469">https://tools.ietf.org/html/rfc7469</a>
   </dl>
   <h3 class="no-num heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
@@ -1216,10 +1302,6 @@ this coverage.</p>
    <dd>T. Dierks; E. Rescorla. <a href="https://tools.ietf.org/html/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>. August 2008. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc5246">https://tools.ietf.org/html/rfc5246</a>
    <dt id="biblio-rfc1035"><a class="self-link" href="#biblio-rfc1035"></a>[RFC1035]
    <dd>P.V. Mockapetris. <a href="https://tools.ietf.org/html/rfc1035">Domain names - implementation and specification</a>. November 1987. Internet Standard. URL: <a href="https://tools.ietf.org/html/rfc1035">https://tools.ietf.org/html/rfc1035</a>
-   <dt id="biblio-rfc6797"><a class="self-link" href="#biblio-rfc6797"></a>[RFC6797]
-   <dd>J. Hodges; C. Jackson; A. Barth. <a href="https://tools.ietf.org/html/rfc6797">HTTP Strict Transport Security (HSTS)</a>. November 2012. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6797">https://tools.ietf.org/html/rfc6797</a>
-   <dt id="biblio-rfc7469"><a class="self-link" href="#biblio-rfc7469"></a>[RFC7469]
-   <dd>C. Evans; C. Palmer; R. Sleevi. <a href="https://tools.ietf.org/html/rfc7469">Public Key Pinning Extension for HTTP</a>. April 2015. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7469">https://tools.ietf.org/html/rfc7469</a>
   </dl>
  </body>
 </html>

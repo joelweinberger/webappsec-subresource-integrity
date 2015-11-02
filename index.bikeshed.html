@@ -1067,6 +1067,11 @@ fetched resource has been delivered without unexpected manipulation.</p>
       <li><a href="#grammar"><span class="secno">2.1</span> <span class="content">Grammatical Concepts</span></a>
      </ul>
     <li>
+     <a href="#framework"><span class="secno">3</span> <span class="content">Framework</span></a>
+     <ul class="toc">
+      <li><a href="#metadata"><span class="secno">3.1</span> <span class="content">Integrity metadata</span></a>
+     </ul>
+    <li>
      <a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ul class="toc">
       <li><a href="#conventions"><span class="secno"></span> <span class="content">Document conventions</span></a>
@@ -1176,7 +1181,7 @@ encoded</a> result of executing a cryptographic hash function on an arbitrary
 block of data.</p>
    <p>The term <dfn data-dfn-type="dfn" data-noexport="" id="origin">origin<a class="self-link" href="#origin"></a></dfn> is defined in the Origin specification. <a data-link-type="biblio" href="#biblio-rfc6454">[RFC6454]</a></p>
    <p>The terms <dfn data-dfn-type="dfn" data-noexport="" id="secure-document">secure document<a class="self-link" href="#secure-document"></a></dfn> and <dfn data-dfn-type="dfn" data-noexport="" id="secure-context">secure context<a class="self-link" href="#secure-context"></a></dfn> are defined in <a href="http://www.w3.org/TR/powerful-features/#terms">Section 2 of the Secure
-Contexts specification</a>. <a data-link-type="biblio" href="#biblio-securecontexts">[SecureContexts]</a> An example of a secure document
+Contexts specification</a>. <a data-link-type="biblio" href="#biblio-secure-contexts">[SECURE-CONTEXTS]</a> An example of a secure document
 is a document loaded over HTTPS. A counterexample is a document loaded over
 HTTP.</p>
    <p>The <dfn data-dfn-type="dfn" data-noexport="" id="representation-data">representation data<a class="self-link" href="#representation-data"></a></dfn> and <dfn data-dfn-type="dfn" data-noexport="" id="content-encoding">content encoding<a class="self-link" href="#content-encoding"></a></dfn> of a resource
@@ -1193,9 +1198,44 @@ specified in RFC5234. <a data-link-type="biblio" href="#biblio-abnf">[ABNF]</a>
    <p><a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">Appendix B.1 of ABNF </a> defines <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc5234#appendix-B.1"><code>VCHAR</code></a> (printing characters). <a data-link-type="biblio" href="#biblio-abnf">[ABNF]</a></p>
    <p><dfn data-dfn-type="dfn" data-noexport="" id="wsp"><code>WSP</code><a class="self-link" href="#wsp"></a></dfn> are defined in the HTML 5 specification as <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#space-character"><code>White_Space
 characters</code></a>. <a data-link-type="biblio" href="#biblio-html5">[HTML5]</a></p>
-   <p>[abnf-b1]: https://tools.ietf.org/html/rfc5234#appendix-B.1
-[space-chars]: http://www.w3.org/TR/html5/infrastructure.html#space-character</p>
-   <p>Insert def for <dfn data-dfn-type="dfn" data-noexport="" id="integrity-metadata">integrity metadata<a class="self-link" href="#integrity-metadata"></a></dfn>.</p>
+   <h2 class="heading settled" data-level="3" id="framework"><span class="secno">3. </span><span class="content">Framework</span><a class="self-link" href="#framework"></a></h2>
+   <p>The integrity verification mechanism specified here boils down to the process of
+generating a sufficiently strong cryptographic digest for a resource, and
+transmitting that digest to a user agent so that it may be used to verify the
+response.</p>
+   <h3 class="heading settled" data-level="3.1" id="metadata"><span class="secno">3.1. </span><span class="content">Integrity metadata</span><a class="self-link" href="#metadata"></a></h3>
+   <p>To verify the integrity of a response, a user agent requires <dfn data-dfn-type="dfn" data-noexport="" id="integrity-metadata">integrity
+metadata<a class="self-link" href="#integrity-metadata"></a></dfn> as part of the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">request</a>. This metadata consists of the
+following pieces of information:</p>
+   <ul>
+    <li data-md="">
+     <p>cryptographic hash function ("<code>alg</code>")</p>
+    <li data-md="">
+     <p><a data-link-type="dfn" href="#digest">digest</a> ("<code>val</code>")</p>
+    <li data-md="">
+     <p>options ("<code>opt</code>")</p>
+   </ul>
+   <p>The hash function and digest MUST be provided in order to validate a
+response’s integrity.</p>
+   <div class="note" role="note"> At the moment, no options are defined. However, future versions of
+the spec may define options, such as MIME types. <a data-link-type="biblio" href="#biblio-mime-types">[MIME-TYPES]</a> </div>
+   <p>This metadata MUST be encoded in the same format as the <a data-link-type="dfn" href="http://www.w3.org/TR/CSP2#source-list-syntax"><code>hash-source</code></a> (without the single quotes) in <a data-link-type="biblio" href="#biblio-csp2">[CSP2]</a>.</p>
+   <p>For example, given a script resource containing only the string <code>\"alert(\'Hello, world.\');\"</code>, an author might choose <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-384</a> as a hash
+function. <code>H8BRh8j48O9oYatfu5AZzq6A9RINhZO5H16dQZngK7T62em8MUt1FLm52t+eX6xO</code> is
+the <a data-link-type="dfn" href="#base64-encoding">base64 encoded</a> <a data-link-type="dfn" href="#digest">digest</a> that results. This
+can be encoded as follows:</p>
+   <div class="example" id="example-da8c6097">
+    <a class="self-link" href="#example-da8c6097"></a> 
+<pre>sha384-H8BRh8j48O9oYatfu5AZzq6A9RINhZO5H16dQZngK7T62em8MUt1FLm52t+eX6xO
+</pre>
+   </div>
+   <div class="note" role="note">
+     Digests may be generated using any number of utilities. <a href="https://openssl.org/">OpenSSL</a>, for example, is quite commonly
+available. The example in this section is the result of the following command
+line: 
+<pre>echo -n "alert('Hello, world.');" | openssl dgst -sha384 -binary | openssl base64 -A
+</pre>
+   </div>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -1234,7 +1274,8 @@ characters</code></a>. <a data-link-type="biblio" href="#biblio-html5">[HTML5]</
    <li><a href="#base64-encoding">base64 encoding</a><span>, in §2</span>
    <li><a href="#content-encoding">content encoding</a><span>, in §2</span>
    <li><a href="#digest">digest</a><span>, in §2</span>
-   <li><a href="#integrity-metadata">integrity metadata</a><span>, in §2.1</span>
+   <li><a href="#integrity-metadata">integrity
+metadata</a><span>, in §3.1</span>
    <li><a href="#origin">origin</a><span>, in §2</span>
    <li><a href="#representation-data">representation data</a><span>, in §2</span>
    <li><a href="#secure-context">secure context</a><span>, in §2</span>
@@ -1247,6 +1288,16 @@ characters</code></a>. <a data-link-type="biblio" href="#biblio-html5">[HTML5]</
     <a data-link-type="biblio" href="#biblio-abnf">[ABNF]</a> defines the following terms:
     <ul>
      <li><a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">vchar</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio" href="#biblio-csp2">[CSP2]</a> defines the following terms:
+    <ul>
+     <li><a href="http://www.w3.org/TR/CSP2#source-list-syntax">hash-source</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> defines the following terms:
+    <ul>
+     <li><a href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">request</a>
     </ul>
    <li>
     <a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
@@ -1277,10 +1328,14 @@ characters</code></a>. <a data-link-type="biblio" href="#biblio-html5">[HTML5]</
   <dl>
    <dt id="biblio-abnf"><a class="self-link" href="#biblio-abnf"></a>[ABNF]
    <dd>D. Crocker, Ed.; P. Overell. <a href="https://tools.ietf.org/html/rfc5234">Augmented BNF for Syntax Specifications: ABNF</a>. January 2008. Internet Standard. URL: <a href="https://tools.ietf.org/html/rfc5234">https://tools.ietf.org/html/rfc5234</a>
+   <dt id="biblio-csp2"><a class="self-link" href="#biblio-csp2"></a>[CSP2]
+   <dd>Mike West; Adam Barth; Daniel Veditz. <a href="http://www.w3.org/TR/CSP2/">Content Security Policy Level 2</a>. 21 July 2015. CR. URL: <a href="http://www.w3.org/TR/CSP2/">http://www.w3.org/TR/CSP2/</a>
+   <dt id="biblio-fetch"><a class="self-link" href="#biblio-fetch"></a>[FETCH]
+   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-secure-contexts"><a class="self-link" href="#biblio-secure-contexts"></a>[SECURE-CONTEXTS]
+   <dd>Mike West; Yan Zhu. <a href="http://www.w3.org/TR/powerful-features/">Privileged Contexts</a>. WD. URL: <a href="http://www.w3.org/TR/powerful-features/">http://www.w3.org/TR/powerful-features/</a>
    <dt id="biblio-sha2"><a class="self-link" href="#biblio-sha2"></a>[SHA2]
    <dd><a href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">FIPS PUB 180-4, Secure Hash Standard</a>. URL: <a href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf</a>
-   <dt id="biblio-securecontexts"><a class="self-link" href="#biblio-securecontexts"></a>[SecureContexts]
-   <dd>Mike West; Yan Zhu. <a href="http://www.w3.org/TR/powerful-features/">Privileged Contexts</a>. WD. URL: <a href="http://www.w3.org/TR/powerful-features/">http://www.w3.org/TR/powerful-features/</a>
    <dt id="biblio-html5"><a class="self-link" href="#biblio-html5"></a>[HTML5]
    <dd>Ian Hickson; et al. <a href="http://www.w3.org/TR/html5/">HTML5</a>. 28 October 2014. REC. URL: <a href="http://www.w3.org/TR/html5/">http://www.w3.org/TR/html5/</a>
    <dt id="biblio-rfc2119"><a class="self-link" href="#biblio-rfc2119"></a>[RFC2119]
@@ -1298,6 +1353,8 @@ characters</code></a>. <a data-link-type="biblio" href="#biblio-html5">[HTML5]</
   </dl>
   <h3 class="no-num heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
+   <dt id="biblio-mime-types"><a class="self-link" href="#biblio-mime-types"></a>[MIME-TYPES]
+   <dd>N. Freed; N. Borenstein. <a href="https://tools.ietf.org/html/rfc2046">Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types</a>. November 1996. Draft Standard. URL: <a href="https://tools.ietf.org/html/rfc2046">https://tools.ietf.org/html/rfc2046</a>
    <dt id="biblio-tls"><a class="self-link" href="#biblio-tls"></a>[TLS]
    <dd>T. Dierks; E. Rescorla. <a href="https://tools.ietf.org/html/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>. August 2008. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc5246">https://tools.ietf.org/html/rfc5246</a>
    <dt id="biblio-rfc1035"><a class="self-link" href="#biblio-rfc1035"></a>[RFC1035]

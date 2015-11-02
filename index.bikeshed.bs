@@ -23,6 +23,14 @@ spec: ABNF; urlPrefix: https://tools.ietf.org/html/rfc5234
   type: dfn
     text: VCHAR; url: appendix-B.1
 
+spec: CSP2; urlPrefix: http://www.w3.org/TR/CSP2
+  type: dfn
+    text: hash-source; url: source-list-syntax
+
+spec: Fetch; urlPrefix: https://fetch.spec.whatwg.org
+  type: dfn
+    text: request; url: concept-request-integrity-metadata
+
 spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
   type: dfn
     urlPrefix: infrastructure.html
@@ -46,7 +54,7 @@ spec: SHA2; urlPrefix: http://csrc.nist.gov/publications/fips/fips180-4/fips-180
 
 <pre class="biblio">
 {
-  "SecureContexts": {
+  "SECURE-CONTEXTS": {
     "authors": [ "Mike West", "Yan Zhu" ],
     "href": "http://www.w3.org/TR/powerful-features/",
     "title": "Privileged Contexts",
@@ -181,7 +189,7 @@ The term <dfn>origin</dfn> is defined in the Origin specification.
 The terms <dfn>secure document</dfn> and
 <dfn>secure context</dfn> are defined in
 <a href="http://www.w3.org/TR/powerful-features/#terms">Section 2 of the Secure
-Contexts specification</a>. [[!SecureContexts]] An example of a secure document
+Contexts specification</a>. [[!SECURE-CONTEXTS]] An example of a secure document
 is a document loaded over HTTPS. A counterexample is a document loaded over
 HTTP.
 
@@ -207,4 +215,55 @@ specified in RFC5234. [[!ABNF]]
 <dfn>`WSP`</dfn>  are defined in the HTML 5 specification as <a>`White_Space
 characters`</a>. [[!HTML5]]
 
-Insert def for <dfn>integrity metadata</dfn>.
+<!-- ####################################################################### -->
+
+# Framework # {#framework}
+
+The integrity verification mechanism specified here boils down to the process of
+generating a sufficiently strong cryptographic digest for a resource, and
+transmitting that digest to a user agent so that it may be used to verify the
+response.
+
+## Integrity metadata ## {#metadata}
+
+To verify the integrity of a response, a user agent requires <dfn>integrity
+metadata</dfn> as part of the <a>request</a>. This metadata consists of the
+following pieces of information:
+
+* cryptographic hash function ("`alg`")
+* <a>digest</a> ("`val`")
+* options ("`opt`")
+
+The hash function and digest MUST be provided in order to validate a
+response's integrity.
+
+<div class="note">
+At the moment, no options are defined. However, future versions of
+the spec may define options, such as MIME types. [[MIME-TYPES]]
+</div>
+
+This metadata MUST be encoded in the same format as the <a>`hash-source`</a>
+(without the single quotes) in [[!CSP2]].
+
+For example, given a script resource containing only the string
+`\"alert(\'Hello, world.\');\"`, an author might choose <a>SHA-384</a> as a hash
+function.  `H8BRh8j48O9oYatfu5AZzq6A9RINhZO5H16dQZngK7T62em8MUt1FLm52t+eX6xO` is
+the <a lt="base64 encoding">base64 encoded</a> <a>digest</a> that results. This
+can be encoded as follows:
+
+<div class="example">
+  <pre>
+    sha384-H8BRh8j48O9oYatfu5AZzq6A9RINhZO5H16dQZngK7T62em8MUt1FLm52t+eX6xO
+  </pre>
+</div>
+
+<div class="note">
+Digests may be generated using any number of utilities.  <a
+href="https://openssl.org/">OpenSSL</a>, for example, is quite commonly
+available. The example in this section is the result of the following command
+line:
+
+  <pre>
+    echo -n "alert('Hello, world.');" | openssl dgst -sha384 -binary | openssl base64 -A
+  </pre>
+</div>

@@ -132,11 +132,13 @@ fetched resource has been delivered without unexpected manipulation.</p>
         <li><a href="#link-element-for-stylesheets"><span class="secno">3.8.1</span> <span class="content">The <code>link</code> element for stylesheets</span></a>
         <li><a href="#script-element"><span class="secno">3.8.2</span> <span class="content">The <code>script</code> element</span></a>
        </ul>
+      <li><a href="#proxies"><span class="secno">3.9</span> <span class="content">Proxies</span></a>
       <li>
-       <a href="#proxies"><span class="secno">3.9</span> <span class="content">Proxies</span></a>
+       <a href="#security-considerations"><span class="secno">3.10</span> <span class="content">Security Considerations</span></a>
        <ul class="toc">
-        <li><a href="#hash-collision-attacks"><span class="secno">3.9.1</span> <span class="content">Hash-collision attacks</span></a>
-        <li><a href="#non-secure-contexts"><span class="secno">3.9.2</span> <span class="content">Non-secure contexts remain non-secure</span></a>
+        <li><a href="#non-secure-contexts"><span class="secno">3.10.1</span> <span class="content">Non-secure contexts remain non-secure</span></a>
+        <li><a href="#hash-collision-attacks"><span class="secno">3.10.2</span> <span class="content">Hash collision attacks</span></a>
+        <li><a href="#cross-origin-data-leakage"><span class="secno">3.10.3</span> <span class="content">Cross-origin data leakage</span></a>
        </ul>
      </ul>
     <li>
@@ -307,7 +309,7 @@ request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-
    <p>User agents SHOULD refuse to support known-weak hashing functions like <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc1321.txt#">MD5</a> or <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-1</a> and SHOULD restrict supported hashing functions to
 those known to be collision-resistant. Additionally, user agents SHOULD
 re-evaluate their supported hash functions on a regular basis and deprecate
-support for those functions that have become insecure. See <a href="#hash-collision-attacks">§3.9.1 Hash-collision attacks</a>.</p>
+support for those functions that have become insecure. See <a href="#hash-collision-attacks">§3.10.2 Hash collision attacks</a>.</p>
    <h4 class="heading settled" data-level="3.2.1" id="agility"><span class="secno">3.2.1. </span><span class="content">Agility</span><a class="self-link" href="#agility"></a></h4>
    <p>Multiple sets of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> may be associated with a single
 resource in order to provide agility in the face of future cryptographic
@@ -373,7 +375,7 @@ integrity is only an application level security tool, and it does not change
 the security state of the user agent, a Secure Context is unnecessary. However,
 if integrity is used in something other than a Secure Context (e.g., a document
 delivered over HTTP), authors should be aware that the integrity provides <em>no security guarantees at all</em>. For this reason, authors should only
-deliver integrity metadata in a Secure Context. See <a href="#non-secure-contexts">§3.9.2 Non-secure contexts remain non-secure</a> for more discussion.</p>
+deliver integrity metadata in a Secure Context. See <a href="#non-secure-contexts">§3.10.1 Non-secure contexts remain non-secure</a> for more discussion.</p>
    <p>The following algorithm details these restrictions:</p>
    <ol>
     <li data-md="">
@@ -578,8 +580,47 @@ the canonical version of resources for which a page author has requested
 integrity verification.</p>
    <p>To help inform intermediate servers, those serving the resources SHOULD send
 along with the resource a <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc7234#section-5.2"><code>Cache-Control</code></a> with a value of <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc7234#section-5.2.1.6"><code>no-transform</code></a>.</p>
-   <h4 class="heading settled" data-level="3.9.1" id="hash-collision-attacks"><span class="secno">3.9.1. </span><span class="content">Hash-collision attacks</span><a class="self-link" href="#hash-collision-attacks"></a></h4>
-   <h4 class="heading settled" data-level="3.9.2" id="non-secure-contexts"><span class="secno">3.9.2. </span><span class="content">Non-secure contexts remain non-secure</span><a class="self-link" href="#non-secure-contexts"></a></h4>
+   <h3 class="heading settled" data-level="3.10" id="security-considerations"><span class="secno">3.10. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h3>
+   <p><em> This section is not normative.</em></p>
+   <h4 class="heading settled" data-level="3.10.1" id="non-secure-contexts"><span class="secno">3.10.1. </span><span class="content">Non-secure contexts remain non-secure</span><a class="self-link" href="#non-secure-contexts"></a></h4>
+   <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">Integrity metadata</a> delivered by a context that is not a <a data-link-type="dfn" href="&quot;http://www.w3.org/TR/powerful-features/&quot;#secure-context">Secure
+Context</a>, such as an HTTP page, only protects an origin against a compromise
+of the server where an external resources is hosted. Network attackers can
+alter the digest in-flight (or remove it entirely, or do absolutely anything
+else to the document), just as they could alter the response the hash is meant
+to validate.  Thus, it is recommended that authors deliver integrity metadata
+only to a <a data-link-type="dfn" href="&quot;http://www.w3.org/TR/powerful-features/&quot;#secure-context">Secure Context</a>. See also <a href="http://www.w3.org/2001/tag/doc/web-https ">Securing the Web</a>.</p>
+   <h4 class="heading settled" data-level="3.10.2" id="hash-collision-attacks"><span class="secno">3.10.2. </span><span class="content">Hash collision attacks</span><a class="self-link" href="#hash-collision-attacks"></a></h4>
+   <p>Digests are only as strong as the hash function used to generate them. It is
+recommended that user agents refuse to support known-weak hashing functions and
+limit supported algorithms to those known to be collision resistant. Examples
+of hashing functions that are not recommended include <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc1321.txt#">MD5</a> and <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-1</a>. At the time of writing, <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-384</a> is a good baseline.</p>
+   <p>Moreover, it is recommended that user agents re-evaluate their supported hash
+functions on a regular basis and deprecate support for those functions shown to
+be insecure. Over time, hash functions may be shown to be much weaker than
+expected and, in some cases, broken, so it is important that user agents stay
+aware of these developments.</p>
+   <h4 class="heading settled" data-level="3.10.3" id="cross-origin-data-leakage"><span class="secno">3.10.3. </span><span class="content">Cross-origin data leakage</span><a class="self-link" href="#cross-origin-data-leakage"></a></h4>
+   <p>This specification requires the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#cors-settings-attributes">CORS settings attribute</a> to be present on
+integrity-protected cross-origin requests. If that requirement were omitted,
+attackers could violate the <a href="http://www.w3.org/Security/wiki/Same_Origin_Policy">same-origin
+policy</a> and determine whether a cross-origin resource has certain content.</p>
+   <p>Attackers would attempt to load the resource with a known digest, and
+watch for load failures. If the load fails, the attacker could surmise
+that the response didn’t match the hash and thereby gain some insight into
+its contents. This might reveal, for example, whether or not a user is
+logged into a particular service.</p>
+   <p>Moreover, attackers could brute-force specific values in an otherwise
+static resource. Consider a JSON response that looks like this:</p>
+   <div class="example" id="example-7e9bf81f">
+    <a class="self-link" href="#example-7e9bf81f"></a> 
+<pre>{'status': 'authenticated', 'username': 'admin'}
+</pre>
+   </div>
+   <p>An attacker could precompute hashes for the response with a variety of common
+usernames, and specify those hashes while repeatedly attempting to load the
+document. A successful load would confirm that the attacker has correctly
+guessed the username.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -661,6 +702,7 @@ along with the resource a <a data-link-type="dfn" href="https://tools.ietf.org/h
    <li>
     <a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
     <ul>
+     <li><a href="http://www.w3.org/TR/html5/infrastructure.html#cors-settings-attributes">cors settings attribute</a>
      <li><a href="http://www.w3.org/TR/html5/document-metadata.html#concept-link-obtain">obtain a resource</a>
      <li><a href="http://www.w3.org/TR/html5/scripting-1.html#prepare-a-script">prepare a script</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#reflect">reflect</a>

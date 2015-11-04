@@ -51,6 +51,7 @@ spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
     urlPrefix: document-metadata.html
       text: obtain a resource; url: #concept-link-obtain
     urlPrefix: infrastructure.html
+      text: CORS settings attribute; url: #cors-settings-attributes
       text: reflect; url: #reflect
       text: split on spaces; url: #split-a-string-on-spaces
     urlPrefix: scripting-1.html
@@ -639,6 +640,59 @@ To help inform intermediate servers, those serving the resources SHOULD send
 along with the resource a <a>`Cache-Control`</a> with a value of
 <a>`no-transform`</a>.
 
-### Hash-collision attacks ### {#hash-collision-attacks}
+## Security Considerations ## {#security-considerations}
+
+<em> This section is not normative.</em>
 
 ### Non-secure contexts remain non-secure ### {#non-secure-contexts}
+
+<a>Integrity metadata</a> delivered by a context that is not a <a>Secure
+Context</a>, such as an HTTP page, only protects an origin against a compromise
+of the server where an external resources is hosted. Network attackers can
+alter the digest in-flight (or remove it entirely, or do absolutely anything
+else to the document), just as they could alter the response the hash is meant
+to validate.  Thus, it is recommended that authors deliver integrity metadata
+only to a <a>Secure Context</a>. See also <a
+href="http://www.w3.org/2001/tag/doc/web-https ">Securing the Web</a>.
+
+### Hash collision attacks ### {#hash-collision-attacks}
+
+Digests are only as strong as the hash function used to generate them. It is
+recommended that user agents refuse to support known-weak hashing functions and
+limit supported algorithms to those known to be collision resistant. Examples
+of hashing functions that are not recommended include <a>MD5</a> and
+<a>SHA-1</a>. At the time of writing, <a>SHA-384</a> is a good baseline.
+
+Moreover, it is recommended that user agents re-evaluate their supported hash
+functions on a regular basis and deprecate support for those functions shown to
+be insecure. Over time, hash functions may be shown to be much weaker than
+expected and, in some cases, broken, so it is important that user agents stay
+aware of these developments.
+
+### Cross-origin data leakage ### {#cross-origin-data-leakage}
+
+This specification requires the <a>CORS settings attribute</a> to be present on
+integrity-protected cross-origin requests. If that requirement were omitted,
+attackers could violate the <a
+href="http://www.w3.org/Security/wiki/Same_Origin_Policy">same-origin
+policy</a> and determine whether a cross-origin resource has certain content.
+
+Attackers would attempt to load the resource with a known digest, and
+watch for load failures. If the load fails, the attacker could surmise
+that the response didn't match the hash and thereby gain some insight into
+its contents. This might reveal, for example, whether or not a user is
+logged into a particular service.
+
+Moreover, attackers could brute-force specific values in an otherwise
+static resource. Consider a JSON response that looks like this:
+
+<div class="example">
+  <pre>
+    {'status': 'authenticated', 'username': 'admin'}
+  </pre>
+</div>
+
+An attacker could precompute hashes for the response with a variety of common
+usernames, and specify those hashes while repeatedly attempting to load the
+document. A successful load would confirm that the attacker has correctly
+guessed the username.

@@ -116,9 +116,13 @@ fetched resource has been delivered without unexpected manipulation.</p>
         <li><a href="#parse-metadata"><span class="secno">3.3.3</span> <span class="content">Parse <var>metadata</var></span></a>
         <li><a href="#get-the-strongest-metadata"><span class="secno">3.3.4</span> <span class="content">Get the strongest metadata from <var>set</var></span></a>
         <li><a href="#does-response-match-metadatalist"><span class="secno">3.3.5</span> <span class="content">Does <var>response</var> match <var>metadataList</var></span></a>
-        <li><a href="#integrity-attribute"><span class="secno">3.3.6</span> <span class="content">Integrity attribute</span></a>
-        <li><a href="#hash-collision-attacks"><span class="secno">3.3.7</span> <span class="content">Hash-collision attacks</span></a>
-        <li><a href="#non-secure-contexts"><span class="secno">3.3.8</span> <span class="content">Non-secure contexts remain non-secure</span></a>
+       </ul>
+      <li><a href="#verification-of-html-document-subresources"><span class="secno">3.4</span> <span class="content">Verification of HTML document subresources</span></a>
+      <li>
+       <a href="#the-integrity-attribute"><span class="secno">3.5</span> <span class="content">The <code>integrity</code> attribute</span></a>
+       <ul class="toc">
+        <li><a href="#hash-collision-attacks"><span class="secno">3.5.1</span> <span class="content">Hash-collision attacks</span></a>
+        <li><a href="#non-secure-contexts"><span class="secno">3.5.2</span> <span class="content">Non-secure contexts remain non-secure</span></a>
        </ul>
      </ul>
     <li>
@@ -290,7 +294,7 @@ request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-
    <p>User agents SHOULD refuse to support known-weak hashing functions like <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc1321.txt#">MD5</a> or <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-1</a> and SHOULD restrict supported hashing functions to
 those known to be collision-resistant. Additionally, user agents SHOULD
 re-evaluate their supported hash functions on a regular basis and deprecate
-support for those functions that have become insecure. See <a href="#hash-collision-attacks">§3.3.7 Hash-collision attacks</a>.</p>
+support for those functions that have become insecure. See <a href="#hash-collision-attacks">§3.5.1 Hash-collision attacks</a>.</p>
    <h4 class="heading settled" data-level="3.2.1" id="agility"><span class="secno">3.2.1. </span><span class="content">Agility</span><a class="self-link" href="#agility"></a></h4>
    <p>Multiple sets of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> may be associated with a single
 resource in order to provide agility in the face of future cryptographic
@@ -356,7 +360,7 @@ integrity is only an application level security tool, and it does not change
 the security state of the user agent, a Secure Context is unnecessary. However,
 if integrity is used in something other than a Secure Context (e.g., a document
 delivered over HTTP), authors should be aware that the integrity provides <em>no security guarantees at all</em>. For this reason, authors should only
-deliver integrity metadata in a Secure Context. See <a href="#non-secure-contexts">§3.3.8 Non-secure contexts remain non-secure</a> for more discussion.</p>
+deliver integrity metadata in a Secure Context. See <a href="#non-secure-contexts">§3.5.2 Non-secure contexts remain non-secure</a> for more discussion.</p>
    <p>The following algorithm details these restrictions:</p>
    <ol>
     <li data-md="">
@@ -401,7 +405,7 @@ valid hash expressions whose hash functions are understood by the user agent.</p
        <p>If <var>token</var> is not a valid metadata, skip the remaining
   steps, and proceed to the next token.</p>
       <li data-md="">
-       <p>Parse <var>token</var> per the grammar in <a href="#integrity-attribute">§3.3.6 Integrity attribute</a>.</p>
+       <p>Parse <var>token</var> per the grammar in <a href="#the-integrity-attribute">§3.5 The integrity attribute</a>.</p>
       <li data-md="">
        <p>Let <var>algorithm</var> be the <var>alg</var> component of <var>token</var>.</p>
       <li data-md="">
@@ -484,9 +488,41 @@ HTTP version.</p>
 it is a logical error to attempt to use it without CORS. Additionally, user
 agents SHOULD report a warning message to the developer console to explain this
 failure.</p>
-   <h4 class="heading settled" data-level="3.3.6" id="integrity-attribute"><span class="secno">3.3.6. </span><span class="content">Integrity attribute</span><a class="self-link" href="#integrity-attribute"></a></h4>
-   <h4 class="heading settled" data-level="3.3.7" id="hash-collision-attacks"><span class="secno">3.3.7. </span><span class="content">Hash-collision attacks</span><a class="self-link" href="#hash-collision-attacks"></a></h4>
-   <h4 class="heading settled" data-level="3.3.8" id="non-secure-contexts"><span class="secno">3.3.8. </span><span class="content">Non-secure contexts remain non-secure</span><a class="self-link" href="#non-secure-contexts"></a></h4>
+   <h3 class="heading settled" data-level="3.4" id="verification-of-html-document-subresources"><span class="secno">3.4. </span><span class="content">Verification of HTML document subresources</span><a class="self-link" href="#verification-of-html-document-subresources"></a></h3>
+   <p>A variety of HTML elements result in requests for resources that are to be
+embedded into the document, or executed in its context. To support integrity
+metadata for some of these elements, a new <code>integrity</code> attribute is added to
+the list of content attributes for the <code>link</code> and <code>script</code> elements.</p>
+   <p>A corresponding <code>integrity</code> IDL attribute which <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#reflect">reflects</a> the value each
+element’s <code>integrity</code> content attribute is added to the <code>HTMLLinkElement</code> and <code>HTMLScriptElement</code> interfaces.</p>
+   <p class="note" role="note">Note: A future revision of this specification is likely to include integrity
+support for all possible subresources, i.e., <code>a</code>, <code>audio</code>, <code>embed</code>, <code>iframe</code>, <code>img</code>, <code>link</code>, <code>object</code>, <code>script</code>, <code>source</code>, <code>track</code>, and <code>video</code> elements.</p>
+   <h3 class="heading settled" data-level="3.5" id="the-integrity-attribute"><span class="secno">3.5. </span><span class="content">The <code>integrity</code> attribute</span><a class="self-link" href="#the-integrity-attribute"></a></h3>
+   <p>The <code>integrity</code> attribute represents <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> for an element
+as described in <a href="#integrity-metadata-description">§3.1 Integrity metadata</a>. The value of the attribute
+MUST be either the empty string or at least one valid metadata as described by
+the following ABNF grammar:</p>
+<pre><dfn data-dfn-type="grammar" data-export="" id="grammardef-integrity-metadata-list">integrity-metadata-list<a class="self-link" href="#grammardef-integrity-metadata-list"></a></dfn> = <a data-link-type="grammar" href="https://tools.ietf.org/html/rfc7230#section-3.2.3">OWS</a> <a data-link-type="grammar" href="#grammardef-hash-with-options">hash-with-options</a> *( <a data-link-type="grammar" href="https://tools.ietf.org/html/rfc7230#section-3.2.3">RWS</a> <a data-link-type="grammar" href="#grammardef-hash-with-options">hash-with-options</a> ) <a data-link-type="grammar" href="https://tools.ietf.org/html/rfc7230#section-3.2.3">OWS</a> / <a data-link-type="grammar" href="https://tools.ietf.org/html/rfc7230#section-3.2.3">OWS</a>
+<dfn data-dfn-type="grammar" data-export="" id="grammardef-hash-with-options">hash-with-options<a class="self-link" href="#grammardef-hash-with-options"></a></dfn>  = <a data-link-type="grammar" href="#grammardef-hash-expression">hash-expression</a> *("?" <a data-link-type="grammar" href="#grammardef-option-expression">option-expression</a>)
+<dfn data-dfn-type="grammar" data-export="" id="grammardef-option-expression">option-expression<a class="self-link" href="#grammardef-option-expression"></a></dfn>  = *<a data-link-type="grammar" href="https://tools.ietf.org/html/rfc5234#appendix-B.1">VCHAR</a>
+<dfn data-dfn-type="grammar" data-export="" id="grammardef-hash-algo">hash-algo<a class="self-link" href="#grammardef-hash-algo"></a></dfn>          = <a data-link-type="grammar" href="http://www.w3.org/TR/CSP2#hash_algo">CSP hash-algo</a>
+<dfn data-dfn-type="grammar" data-export="" id="grammardef-base64-value">base64-value<a class="self-link" href="#grammardef-base64-value"></a></dfn>       = <a data-link-type="grammar" href="http://www.w3.org/TR/CSP2#base64_value">CSP base64-value</a>
+<dfn data-dfn-type="grammar" data-export="" id="grammardef-hash-expression">hash-expression<a class="self-link" href="#grammardef-hash-expression"></a></dfn>    = <a data-link-type="grammar" href="#grammardef-hash-algo">hash-algo</a> "-" <a data-link-type="grammar" href="#grammardef-base64-value">base64-value</a>
+
+; <a data-link-type="grammar" href="https://tools.ietf.org/html/rfc7230#section-3.2.3">OWS</a> and <a data-link-type="grammar" href="https://tools.ietf.org/html/rfc7230#section-3.2.3">RWS</a> are defined in section 3.2.3 of RFC7230.
+; <a data-link-type="grammar" href="https://tools.ietf.org/html/rfc5234#appendix-B.1">VCHAR</a> is defined in Appendix B.1 of RFC 5234.
+</pre>
+   <p>The <code>integrity</code> IDL attribute must <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#reflect">reflect</a> the <code>integrity</code> content
+attribute.</p>
+   <p><code>option-expression</code>s are associated on a per <code>hash-expression</code> basis and are
+applied only to the <code>hash-expression</code> that immediately precedes it.</p>
+   <p>In order for user agents to remain fully forwards compatible with future
+options, the user agent MUST ignore all unrecognized <code>option-expression</code>s.</p>
+   <p class="note" role="note">Note: While the <code>option-expression</code> has been reserved in the syntax, no options
+have been defined. It is likely that a future version of the spec will define a
+more specific syntax for options, so it is defined here as broadly as possible.</p>
+   <h4 class="heading settled" data-level="3.5.1" id="hash-collision-attacks"><span class="secno">3.5.1. </span><span class="content">Hash-collision attacks</span><a class="self-link" href="#hash-collision-attacks"></a></h4>
+   <h4 class="heading settled" data-level="3.5.2" id="non-secure-contexts"><span class="secno">3.5.2. </span><span class="content">Non-secure contexts remain non-secure</span><a class="self-link" href="#non-secure-contexts"></a></h4>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -523,10 +559,16 @@ failure.</p>
   <h3 class="no-num heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="indexlist">
    <li><a href="#base64-encoding">base64 encoding</a><span>, in §2</span>
+   <li><a href="#grammardef-base64-value">base64-value</a><span>, in §3.5</span>
    <li><a href="#content-encoding">content encoding</a><span>, in §2</span>
    <li><a href="#cross-origin">cross-origin</a><span>, in §2</span>
    <li><a href="#digest">digest</a><span>, in §2</span>
    <li><a href="#getprioritizedhashfunction">getPrioritizedHashFunction</a><span>, in §3.2.2</span>
+   <li><a href="#grammardef-hash-algo">hash-algo</a><span>, in §3.5</span>
+   <li><a href="#grammardef-hash-expression">hash-expression</a><span>, in §3.5</span>
+   <li><a href="#grammardef-hash-with-options">hash-with-options</a><span>, in §3.5</span>
+   <li><a href="#grammardef-integrity-metadata-list">integrity-metadata-list</a><span>, in §3.5</span>
+   <li><a href="#grammardef-option-expression">option-expression</a><span>, in §3.5</span>
    <li><a href="#origin">origin</a><span>, in §2</span>
    <li><a href="#representation-data">representation data</a><span>, in §2</span>
    <li><a href="#same-origin">same-origin</a><span>, in §2</span>
@@ -542,6 +584,8 @@ failure.</p>
    <li>
     <a data-link-type="biblio" href="#biblio-csp2">[CSP2]</a> defines the following terms:
     <ul>
+     <li><a href="http://www.w3.org/TR/CSP2#base64_value">csp base64-value</a>
+     <li><a href="http://www.w3.org/TR/CSP2#hash_algo">csp hash-algo</a>
      <li><a href="http://www.w3.org/TR/CSP2#source-list-syntax">hash-source</a>
     </ul>
    <li>
@@ -555,6 +599,7 @@ failure.</p>
    <li>
     <a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
     <ul>
+     <li><a href="http://www.w3.org/TR/html5/infrastructure.html#reflect">reflect</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#split-a-string-on-spaces">split on spaces</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#space-character">white_space characters</a>
     </ul>
@@ -564,9 +609,20 @@ failure.</p>
      <li><a href="https://www.ietf.org/rfc/rfc1321.txt#">md5</a>
     </ul>
    <li>
+    <a data-link-type="biblio" href="#biblio-rfc5234">[rfc5234]</a> defines the following terms:
+    <ul>
+     <li><a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">vchar</a>
+    </ul>
+   <li>
     <a data-link-type="biblio" href="#biblio-rfc6797">[rfc6797]</a> defines the following terms:
     <ul>
      <li><a href="https://tools.ietf.org/html/rfc6797#section-6.1">strict-transport-security</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio" href="#biblio-rfc7230">[rfc7230]</a> defines the following terms:
+    <ul>
+     <li><a href="https://tools.ietf.org/html/rfc7230#section-3.2.3">ows</a>
+     <li><a href="https://tools.ietf.org/html/rfc7230#section-3.2.3">rws</a>
     </ul>
    <li>
     <a data-link-type="biblio" href="#biblio-rfc7469">[rfc7469]</a> defines the following terms:
@@ -613,8 +669,12 @@ failure.</p>
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-rfc4648"><a class="self-link" href="#biblio-rfc4648"></a>[RFC4648]
    <dd>S. Josefsson. <a href="https://tools.ietf.org/html/rfc4648">The Base16, Base32, and Base64 Data Encodings</a>. October 2006. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc4648">https://tools.ietf.org/html/rfc4648</a>
+   <dt id="biblio-rfc5234"><a class="self-link" href="#biblio-rfc5234"></a>[RFC5234]
+   <dd>D. Crocker, Ed.; P. Overell. <a href="https://tools.ietf.org/html/rfc5234">Augmented BNF for Syntax Specifications: ABNF</a>. January 2008. Internet Standard. URL: <a href="https://tools.ietf.org/html/rfc5234">https://tools.ietf.org/html/rfc5234</a>
    <dt id="biblio-rfc6797"><a class="self-link" href="#biblio-rfc6797"></a>[RFC6797]
    <dd>J. Hodges; C. Jackson; A. Barth. <a href="https://tools.ietf.org/html/rfc6797">HTTP Strict Transport Security (HSTS)</a>. November 2012. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6797">https://tools.ietf.org/html/rfc6797</a>
+   <dt id="biblio-rfc7230"><a class="self-link" href="#biblio-rfc7230"></a>[RFC7230]
+   <dd>R. Fielding, Ed.; J. Reschke, Ed.. <a href="https://tools.ietf.org/html/rfc7230">Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing</a>. June 2014. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7230">https://tools.ietf.org/html/rfc7230</a>
    <dt id="biblio-rfc7231"><a class="self-link" href="#biblio-rfc7231"></a>[RFC7231]
    <dd>R. Fielding, Ed.; J. Reschke, Ed.. <a href="https://tools.ietf.org/html/rfc7231">Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content</a>. June 2014. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7231">https://tools.ietf.org/html/rfc7231</a>
    <dt id="biblio-rfc7469"><a class="self-link" href="#biblio-rfc7469"></a>[RFC7469]

@@ -34,6 +34,9 @@ spec: ABNF; urlPrefix: https://tools.ietf.org/html/rfc5234
 spec: CSP2; urlPrefix: http://www.w3.org/TR/CSP2
   type: dfn
     text: hash-source; url: source-list-syntax
+  type: grammar
+    text: CSP base64-value; url: base64_value
+    text: CSP hash-algo; url: hash_algo
 
 spec: Fetch; urlPrefix: https://fetch.spec.whatwg.org
   type: dfn
@@ -45,6 +48,7 @@ spec: Fetch; urlPrefix: https://fetch.spec.whatwg.org
 spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
   type: dfn
     urlPrefix: infrastructure.html
+      text: reflect; url: #reflect
       text: split on spaces; url: #split-a-string-on-spaces
       text: White_Space characters; url: #space-character
 
@@ -52,9 +56,24 @@ spec: RFC1321; urlPrefix: https://www.ietf.org/rfc/rfc1321.txt
   type: dfn
     text: MD5; url: #
 
+spec: RFC5234; urlPrefix: https://tools.ietf.org/html/rfc5234
+  type: grammar
+    text: ALPHA; url: appendix-B.1
+    text: DIGIT; url: appendix-B.1
+    text: VCHAR; url: appendix-B.1
+    text: WSP; url: appendix-B.1
+
 spec: RFC6797; urlPrefix: https://tools.ietf.org/html/rfc6797
   type: dfn
     text: Strict-Transport-Security; url: section-6.1
+
+spec: RFC7230; urlPrefix: https://tools.ietf.org/html/rfc7230
+  type: grammar
+    text: BWS; url: section-3.2.3
+    text: OWS; url: section-3.2.3
+    text: RWS; url: section-3.2.3
+    text: quoted-string; url: section-3.2.6
+    text: token; url: section-3.2.6
 
 spec: RFC7469; urlPrefix: https://tools.ietf.org/html/rfc7469
   type: dfn
@@ -424,7 +443,7 @@ valid hash expressions whose hash functions are understood by the user agent.
   1.  Set |empty| to `false`.
   2.  If |token| is not a valid metadata, skip the remaining
       steps, and proceed to the next token.
-  3.  Parse |token| per the grammar in [[#integrity-attribute]].
+  3.  Parse |token| per the grammar in [[#the-integrity-attribute]].
   4.  Let |algorithm| be the |alg| component of
       |token|.
   5.  If |algorithm| is a hash function recognized by the user
@@ -502,7 +521,52 @@ it is a logical error to attempt to use it without CORS. Additionally, user
 agents SHOULD report a warning message to the developer console to explain this
 failure.
 
-### Integrity attribute ### {#integrity-attribute}
+## Verification of HTML document subresources ## {#verification-of-html-document-subresources}
+
+A variety of HTML elements result in requests for resources that are to be
+embedded into the document, or executed in its context. To support integrity
+metadata for some of these elements, a new `integrity` attribute is added to
+the list of content attributes for the `link` and `script` elements.
+
+A corresponding `integrity` IDL attribute which <a>reflects</a> the value each
+element's `integrity` content attribute is added to the `HTMLLinkElement` and
+`HTMLScriptElement` interfaces.
+
+Note: A future revision of this specification is likely to include integrity
+support for all possible subresources, i.e., `a`, `audio`, `embed`, `iframe`,
+`img`, `link`, `object`, `script`, `source`, `track`, and `video` elements.
+
+## The `integrity` attribute ## {#the-integrity-attribute}
+
+The `integrity` attribute represents <a>integrity metadata</a> for an element
+as described in [[#integrity-metadata-description]]. The value of the attribute
+MUST be either the empty string or at least one valid metadata as described by
+the following ABNF grammar:
+
+<pre dfn-type="grammar" link-type="grammar">
+  <dfn>integrity-metadata-list</dfn> = <a>OWS</a> <a>hash-with-options</a> *( <a>RWS</a> <a>hash-with-options</a> ) <a>OWS</a> / <a>OWS</a>
+  <dfn>hash-with-options</dfn>  = <a>hash-expression</a> *("?" <a>option-expression</a>)
+  <dfn>option-expression</dfn>  = *<a>VCHAR</a>
+  <dfn>hash-algo</dfn>          = <a>CSP hash-algo</a>
+  <dfn>base64-value</dfn>       = <a>CSP base64-value</a>
+  <dfn>hash-expression</dfn>    = <a>hash-algo</a> "-" <a>base64-value</a>
+
+  ; <a>OWS</a> and <a>RWS</a> are defined in section 3.2.3 of RFC7230.
+  ; <a>VCHAR</a> is defined in Appendix B.1 of RFC 5234.
+</pre>
+
+The `integrity` IDL attribute must <a>reflect</a> the `integrity` content
+attribute.
+
+`option-expression`s are associated on a per `hash-expression` basis and are
+applied only to the `hash-expression` that immediately precedes it.
+
+In order for user agents to remain fully forwards compatible with future
+options, the user agent MUST ignore all unrecognized  `option-expression`s.
+
+Note: While the `option-expression` has been reserved in the syntax, no options
+have been defined. It is likely that a future version of the spec will define a
+more specific syntax for options, so it is defined here as broadly as possible.
 
 ### Hash-collision attacks ### {#hash-collision-attacks}
 

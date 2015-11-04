@@ -102,6 +102,12 @@ fetched resource has been delivered without unexpected manipulation.</p>
      <a href="#framework"><span class="secno">3</span> <span class="content">Framework</span></a>
      <ul class="toc">
       <li><a href="#metadata"><span class="secno">3.1</span> <span class="content">Integrity metadata</span></a>
+      <li>
+       <a href="#cryptographic-hash-functions"><span class="secno">3.2</span> <span class="content">Cryptographic hash functions</span></a>
+       <ul class="toc">
+        <li><a href="#agility"><span class="secno">3.2.1</span> <span class="content">Agility</span></a>
+        <li><a href="#priority"><span class="secno">3.2.2</span> <span class="content">Priority</span></a>
+       </ul>
      </ul>
     <li>
      <a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
@@ -264,6 +270,54 @@ line:
 <pre>echo -n "alert('Hello, world.');" | openssl dgst -sha384 -binary | openssl base64 -A
 </pre>
    </div>
+   <h3 class="heading settled" data-level="3.2" id="cryptographic-hash-functions"><span class="secno">3.2. </span><span class="content">Cryptographic hash functions</span><a class="self-link" href="#cryptographic-hash-functions"></a></h3>
+   <p>Conformant user agents MUST support the <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-256</a>, <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-384</a>,
+and <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-512</a> cryptographic hash functions for use as part of a
+request’s <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> and MAY support additional hash functions.</p>
+   <p>User agents SHOULD refuse to support known-weak hashing functions like <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc1321.txt#">MD5</a> or <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-1</a> and SHOULD restrict supported hashing functions to
+those known to be collision-resistant. Additionally, user agents SHOULD
+re-evaluate their supported hash functions on a regular basis and deprecate
+support for those functions that have become insecure. See
+[#hash-collision-attacks].</p>
+   <h4 class="heading settled" data-level="3.2.1" id="agility"><span class="secno">3.2.1. </span><span class="content">Agility</span><a class="self-link" href="#agility"></a></h4>
+   <p>Multiple sets of <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> may be associated with a single
+resource in order to provide agility in the face of future cryptographic
+discoveries.  For example, the resource described in the previous section may be
+described by either of the following hash expressions:</p>
+   <div class="example" id="example-9e091bdc">
+    <a class="self-link" href="#example-9e091bdc"></a> 
+<pre>sha384-dOTZf16X8p34q2/kYyEFm0jh89uTjikhnzjeLeF0FHsEaYKb1A1cv+Lyv4Hk8vHd
+sha512-Q2bFTOhEALkN8hOms2FKTDLy7eugP2zFZ1T8LCvX42Fp3WoNr3bjZSAHeOsHrbV1Fu9/A0EzCinRE7Af1ofPrw==
+</pre>
+   </div>
+   <p>Authors may choose to specify both, for example:</p>
+   <div class="example" id="example-ffb16d19">
+    <a class="self-link" href="#example-ffb16d19"></a> 
+<pre>&lt;script src="hello_world.js"
+   integrity="sha384-dOTZf16X8p34q2/kYyEFm0jh89uTjikhnzjeLeF0FHsEaYKb1A1cv+Lyv4Hk8vHd
+              sha512-Q2bFTOhEALkN8hOms2FKTDLy7eugP2zFZ1T8LCvX42Fp3WoNr3bjZSAHeOsHrbV1Fu9/A0EzCinRE7Af1ofPrw=="
+   crossorigin="anonymous">&lt;/script>
+</pre>
+   </div>
+   <p>In this case, the user agent will choose the strongest hash function in the
+list, and use that metadata to validate the response (as described below in the <a data-link-type="dfn" href="#parse-metadata">parse metadata</a> and <a data-link-type="dfn" href="#get-the-strongest-metadata-from-set">get the strongest metadata from set</a> algorithms).</p>
+   <p>When a hash function is determined to be insecure, user agents SHOULD deprecate
+and eventually remove support for integrity validation using the insecure hash
+function. User agents MAY check the validity of responses using a digest based
+on a deprecated function.</p>
+   <p>To allow authors to switch to stronger hash functions without being held back by
+older user agents, validation using unsupported hash functions acts like no
+integrity value was provided (see the <a data-link-type="dfn" href="#does-response-match-metadatalist">Does response match metadataList</a> algorithm below).  Authors  are encouraged to use strong hash functions, and to
+begin migrating to stronger hash functions as they become available.</p>
+   <h4 class="heading settled" data-level="3.2.2" id="priority"><span class="secno">3.2.2. </span><span class="content">Priority</span><a class="self-link" href="#priority"></a></h4>
+   <p>User agents must provide a mechanism for determining the relative priority of
+two hash functions and return the empty string if the priority is equal. That
+is, if a user agent implemented a function like <dfn data-dfn-type="dfn" data-noexport="" id="getprioritizedhashfunction">getPrioritizedHashFunction<a class="self-link" href="#getprioritizedhashfunction"></a></dfn>(a, b) it would return the hash function
+the user agent considers the most collision-resistant.  For example, <code>getPrioritizedHashFunction('sha256', 'sha512')</code> would return <code>'sha512'</code> and <code>getPrioritizedHashFunction('sha256', 'sha256')</code> would return the empty string.</p>
+   <div class="note" role="note"> The <a data-link-type="dfn" href="#getprioritizedhashfunction">getPrioritizedHashFunction</a> is an internal implementation detail.
+  It is not an API that implementors provide to web applications. It is used in
+  this document only to simplify the algorithm description. </div>
+   <p><dfn data-dfn-type="dfn" data-noexport="" id="parse-metadata">parse metadata<a class="self-link" href="#parse-metadata"></a></dfn> <dfn data-dfn-type="dfn" data-noexport="" id="get-the-strongest-metadata-from-set">get the strongest metadata from set<a class="self-link" href="#get-the-strongest-metadata-from-set"></a></dfn> <dfn data-dfn-type="dfn" data-noexport="" id="does-response-match-metadatalist">does response match metadatalist<a class="self-link" href="#does-response-match-metadatalist"></a></dfn></p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -302,9 +356,13 @@ line:
    <li><a href="#base64-encoding">base64 encoding</a><span>, in §2</span>
    <li><a href="#content-encoding">content encoding</a><span>, in §2</span>
    <li><a href="#digest">digest</a><span>, in §2</span>
+   <li><a href="#does-response-match-metadatalist">does response match metadatalist</a><span>, in §3.2.2</span>
+   <li><a href="#getprioritizedhashfunction">getPrioritizedHashFunction</a><span>, in §3.2.2</span>
+   <li><a href="#get-the-strongest-metadata-from-set">get the strongest metadata from set</a><span>, in §3.2.2</span>
    <li><a href="#integrity-metadata">integrity
 metadata</a><span>, in §3.1</span>
    <li><a href="#origin">origin</a><span>, in §2</span>
+   <li><a href="#parse-metadata">parse metadata</a><span>, in §3.2.2</span>
    <li><a href="#representation-data">representation data</a><span>, in §2</span>
    <li><a href="#wsp">WSP</a><span>, in §2.1</span>
   </ul>
@@ -331,6 +389,11 @@ metadata</a><span>, in §3.1</span>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#space-character">white_space characters</a>
     </ul>
    <li>
+    <a data-link-type="biblio" href="#biblio-rfc1321">[rfc1321]</a> defines the following terms:
+    <ul>
+     <li><a href="https://www.ietf.org/rfc/rfc1321.txt#">md5</a>
+    </ul>
+   <li>
     <a data-link-type="biblio" href="#biblio-rfc6797">[rfc6797]</a> defines the following terms:
     <ul>
      <li><a href="https://tools.ietf.org/html/rfc6797#section-6.1">strict-transport-security</a>
@@ -343,6 +406,7 @@ metadata</a><span>, in §3.1</span>
    <li>
     <a data-link-type="biblio" href="#biblio-sha2">[SHA2]</a> defines the following terms:
     <ul>
+     <li><a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">sha-1</a>
      <li><a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">sha-2</a>
      <li><a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">sha-256</a>
      <li><a href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">sha-384</a>
@@ -362,6 +426,8 @@ metadata</a><span>, in §3.1</span>
    <dd><a href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">FIPS PUB 180-4, Secure Hash Standard</a>. URL: <a href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf</a>
    <dt id="biblio-html5"><a class="self-link" href="#biblio-html5"></a>[HTML5]
    <dd>Ian Hickson; et al. <a href="http://www.w3.org/TR/html5/">HTML5</a>. 28 October 2014. REC. URL: <a href="http://www.w3.org/TR/html5/">http://www.w3.org/TR/html5/</a>
+   <dt id="biblio-rfc1321"><a class="self-link" href="#biblio-rfc1321"></a>[RFC1321]
+   <dd>R. Rivest. <a href="https://tools.ietf.org/html/rfc1321">The MD5 Message-Digest Algorithm</a>. April 1992. Informational. URL: <a href="https://tools.ietf.org/html/rfc1321">https://tools.ietf.org/html/rfc1321</a>
    <dt id="biblio-rfc2119"><a class="self-link" href="#biblio-rfc2119"></a>[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-rfc4648"><a class="self-link" href="#biblio-rfc4648"></a>[RFC4648]

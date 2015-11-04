@@ -44,6 +44,10 @@ spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
     urlPrefix: infrastructure.html
       text: White_Space characters; url: #space-character
 
+spec: RFC1321; urlPrefix: https://www.ietf.org/rfc/rfc1321.txt
+  type: dfn
+    text: MD5; url: #
+
 spec: RFC6797; urlPrefix: https://tools.ietf.org/html/rfc6797
   type: dfn
     text: Strict-Transport-Security; url: section-6.1
@@ -54,6 +58,7 @@ spec: RFC7469; urlPrefix: https://tools.ietf.org/html/rfc7469
 
 spec: SHA2; urlPrefix: http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf
   type: dfn
+    text: SHA-1; url: #
     text: SHA-2; url: #
     text: SHA-256; url: #
     text: SHA-384; url: #
@@ -268,3 +273,77 @@ line:
     echo -n "alert('Hello, world.');" | openssl dgst -sha384 -binary | openssl base64 -A
   </pre>
 </div>
+
+## Cryptographic hash functions ## {#cryptographic-hash-functions}
+
+Conformant user agents MUST support the <a>SHA-256</a>, <a>SHA-384</a>,
+and <a>SHA-512</a> cryptographic hash functions for use as part of a
+request's <a>integrity metadata</a> and MAY support additional hash functions.
+
+User agents SHOULD refuse to support known-weak hashing functions like
+<a>MD5</a> or <a>SHA-1</a> and SHOULD restrict supported hashing functions to
+those known to be collision-resistant. Additionally, user agents SHOULD
+re-evaluate their supported hash functions on a regular basis and deprecate
+support for those functions that have become insecure. See
+[#hash-collision-attacks].
+
+### Agility ### {#agility}
+
+Multiple sets of <a>integrity metadata</a> may be associated with a single
+resource in order to provide agility in the face of future cryptographic
+discoveries.  For example, the resource described in the previous section may be
+described by either of the following hash expressions:
+
+<div class="example">
+  <pre>
+    sha384-dOTZf16X8p34q2/kYyEFm0jh89uTjikhnzjeLeF0FHsEaYKb1A1cv+Lyv4Hk8vHd
+    sha512-Q2bFTOhEALkN8hOms2FKTDLy7eugP2zFZ1T8LCvX42Fp3WoNr3bjZSAHeOsHrbV1Fu9/A0EzCinRE7Af1ofPrw==
+  </pre>
+</div>
+
+Authors may choose to specify both, for example:
+
+<div class="example">
+  <pre>
+    &lt;script src="hello_world.js"
+       integrity="sha384-dOTZf16X8p34q2/kYyEFm0jh89uTjikhnzjeLeF0FHsEaYKb1A1cv+Lyv4Hk8vHd
+                  sha512-Q2bFTOhEALkN8hOms2FKTDLy7eugP2zFZ1T8LCvX42Fp3WoNr3bjZSAHeOsHrbV1Fu9/A0EzCinRE7Af1ofPrw=="
+       crossorigin="anonymous">&lt;/script>
+  </pre>
+</div>
+
+In this case, the user agent will choose the strongest hash function in the
+list, and use that metadata to validate the response (as described below in the
+<a>parse metadata</a> and <a>get the strongest metadata from set</a>
+algorithms).
+
+When a hash function is determined to be insecure, user agents SHOULD deprecate
+and eventually remove support for integrity validation using the insecure hash
+function. User agents MAY check the validity of responses using a digest based
+on a deprecated function.
+
+To allow authors to switch to stronger hash functions without being held back by
+older user agents, validation using unsupported hash functions acts like no
+integrity value was provided (see the <a>Does response match metadataList</a>
+algorithm below).  Authors  are encouraged to use strong hash functions, and to
+begin migrating to stronger hash functions as they become available.
+
+### Priority ### {#priority}
+
+User agents must provide a mechanism for determining the relative priority of
+two hash functions and return the empty string if the priority is equal. That
+is, if a user agent implemented a function like
+<dfn>getPrioritizedHashFunction</dfn>(a, b) it would return the hash function
+the user agent considers the most collision-resistant.  For example,
+`getPrioritizedHashFunction('sha256', 'sha512')` would return `'sha512'` and
+`getPrioritizedHashFunction('sha256', 'sha256')` would return the empty string.
+
+<div class="note">
+  The <a>getPrioritizedHashFunction</a> is an internal implementation detail.
+  It is not an API that implementors provide to web applications. It is used in
+  this document only to simplify the algorithm description.
+</div>
+
+<dfn>parse metadata</dfn>
+<dfn>get the strongest metadata from set</dfn>
+<dfn>does response match metadatalist</dfn>

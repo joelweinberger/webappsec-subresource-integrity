@@ -79,6 +79,11 @@ spec: RFC7230; urlPrefix: https://tools.ietf.org/html/rfc7230
     text: quoted-string; url: section-3.2.6
     text: token; url: section-3.2.6
 
+spec: RFC7234; urlPrefix: https://tools.ietf.org/html/rfc7234
+  type: dfn
+    text: Cache-Control; url: section-5.2
+    text: no-transform; url: section-5.2.1.6
+
 spec: RFC7469; urlPrefix: https://tools.ietf.org/html/rfc7469
   type: dfn
     text: Public Key Pinning; url: section-1
@@ -620,6 +625,19 @@ Replace step 14.1 of HTML5's <a>prepare a script</a> algorithm with:
 1.  Let |src| be the value of the element's `src` attribute and
     the request's associated <a>integrity metadata</a> be the value of the
     element's `integrity` attribute.
+
+## Proxies ## {#proxies}
+
+Optimizing proxies and other intermediate servers which modify the responses
+MUST ensure that the digest associated with those responses stays in sync with
+the new content. One option is to ensure that the <a>integrity metadata</a>
+associated with resources is updated. Another would be simply to deliver only
+the canonical version of resources for which a page author has requested
+integrity verification.
+
+To help inform intermediate servers, those serving the resources SHOULD send
+along with the resource a <a>`Cache-Control`</a> with a value of
+<a>`no-transform`</a>.
 
 ### Hash-collision attacks ### {#hash-collision-attacks}
 

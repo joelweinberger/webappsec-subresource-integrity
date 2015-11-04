@@ -131,8 +131,12 @@ fetched resource has been delivered without unexpected manipulation.</p>
        <ul class="toc">
         <li><a href="#link-element-for-stylesheets"><span class="secno">3.8.1</span> <span class="content">The <code>link</code> element for stylesheets</span></a>
         <li><a href="#script-element"><span class="secno">3.8.2</span> <span class="content">The <code>script</code> element</span></a>
-        <li><a href="#hash-collision-attacks"><span class="secno">3.8.3</span> <span class="content">Hash-collision attacks</span></a>
-        <li><a href="#non-secure-contexts"><span class="secno">3.8.4</span> <span class="content">Non-secure contexts remain non-secure</span></a>
+       </ul>
+      <li>
+       <a href="#proxies"><span class="secno">3.9</span> <span class="content">Proxies</span></a>
+       <ul class="toc">
+        <li><a href="#hash-collision-attacks"><span class="secno">3.9.1</span> <span class="content">Hash-collision attacks</span></a>
+        <li><a href="#non-secure-contexts"><span class="secno">3.9.2</span> <span class="content">Non-secure contexts remain non-secure</span></a>
        </ul>
      </ul>
     <li>
@@ -303,7 +307,7 @@ request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-
    <p>User agents SHOULD refuse to support known-weak hashing functions like <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc1321.txt#">MD5</a> or <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-1</a> and SHOULD restrict supported hashing functions to
 those known to be collision-resistant. Additionally, user agents SHOULD
 re-evaluate their supported hash functions on a regular basis and deprecate
-support for those functions that have become insecure. See <a href="#hash-collision-attacks">§3.8.3 Hash-collision attacks</a>.</p>
+support for those functions that have become insecure. See <a href="#hash-collision-attacks">§3.9.1 Hash-collision attacks</a>.</p>
    <h4 class="heading settled" data-level="3.2.1" id="agility"><span class="secno">3.2.1. </span><span class="content">Agility</span><a class="self-link" href="#agility"></a></h4>
    <p>Multiple sets of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> may be associated with a single
 resource in order to provide agility in the face of future cryptographic
@@ -369,7 +373,7 @@ integrity is only an application level security tool, and it does not change
 the security state of the user agent, a Secure Context is unnecessary. However,
 if integrity is used in something other than a Secure Context (e.g., a document
 delivered over HTTP), authors should be aware that the integrity provides <em>no security guarantees at all</em>. For this reason, authors should only
-deliver integrity metadata in a Secure Context. See <a href="#non-secure-contexts">§3.8.4 Non-secure contexts remain non-secure</a> for more discussion.</p>
+deliver integrity metadata in a Secure Context. See <a href="#non-secure-contexts">§3.9.2 Non-secure contexts remain non-secure</a> for more discussion.</p>
    <p>The following algorithm details these restrictions:</p>
    <ol>
     <li data-md="">
@@ -566,8 +570,16 @@ request set to the value of the element’s <code>integrity</code> attribute.</p
   the request’s associated <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> be the value of the
   element’s <code>integrity</code> attribute.</p>
    </ol>
-   <h4 class="heading settled" data-level="3.8.3" id="hash-collision-attacks"><span class="secno">3.8.3. </span><span class="content">Hash-collision attacks</span><a class="self-link" href="#hash-collision-attacks"></a></h4>
-   <h4 class="heading settled" data-level="3.8.4" id="non-secure-contexts"><span class="secno">3.8.4. </span><span class="content">Non-secure contexts remain non-secure</span><a class="self-link" href="#non-secure-contexts"></a></h4>
+   <h3 class="heading settled" data-level="3.9" id="proxies"><span class="secno">3.9. </span><span class="content">Proxies</span><a class="self-link" href="#proxies"></a></h3>
+   <p>Optimizing proxies and other intermediate servers which modify the responses
+MUST ensure that the digest associated with those responses stays in sync with
+the new content. One option is to ensure that the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> associated with resources is updated. Another would be simply to deliver only
+the canonical version of resources for which a page author has requested
+integrity verification.</p>
+   <p>To help inform intermediate servers, those serving the resources SHOULD send
+along with the resource a <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc7234#section-5.2"><code>Cache-Control</code></a> with a value of <a data-link-type="dfn" href="https://tools.ietf.org/html/rfc7234#section-5.2.1.6"><code>no-transform</code></a>.</p>
+   <h4 class="heading settled" data-level="3.9.1" id="hash-collision-attacks"><span class="secno">3.9.1. </span><span class="content">Hash-collision attacks</span><a class="self-link" href="#hash-collision-attacks"></a></h4>
+   <h4 class="heading settled" data-level="3.9.2" id="non-secure-contexts"><span class="secno">3.9.2. </span><span class="content">Non-secure contexts remain non-secure</span><a class="self-link" href="#non-secure-contexts"></a></h4>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -676,6 +688,12 @@ request set to the value of the element’s <code>integrity</code> attribute.</p
      <li><a href="https://tools.ietf.org/html/rfc7230#section-3.2.3">rws</a>
     </ul>
    <li>
+    <a data-link-type="biblio" href="#biblio-rfc7234">[rfc7234]</a> defines the following terms:
+    <ul>
+     <li><a href="https://tools.ietf.org/html/rfc7234#section-5.2">cache-control</a>
+     <li><a href="https://tools.ietf.org/html/rfc7234#section-5.2.1.6">no-transform</a>
+    </ul>
+   <li>
     <a data-link-type="biblio" href="#biblio-rfc7469">[rfc7469]</a> defines the following terms:
     <ul>
      <li><a href="https://tools.ietf.org/html/rfc7469#section-1">public key pinning</a>
@@ -736,6 +754,8 @@ request set to the value of the element’s <code>integrity</code> attribute.</p
    <dd>R. Fielding, Ed.; J. Reschke, Ed.. <a href="https://tools.ietf.org/html/rfc7230">Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing</a>. June 2014. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7230">https://tools.ietf.org/html/rfc7230</a>
    <dt id="biblio-rfc7231"><a class="self-link" href="#biblio-rfc7231"></a>[RFC7231]
    <dd>R. Fielding, Ed.; J. Reschke, Ed.. <a href="https://tools.ietf.org/html/rfc7231">Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content</a>. June 2014. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7231">https://tools.ietf.org/html/rfc7231</a>
+   <dt id="biblio-rfc7234"><a class="self-link" href="#biblio-rfc7234"></a>[RFC7234]
+   <dd>R. Fielding, Ed.; M. Nottingham, Ed.; J. Reschke, Ed.. <a href="https://tools.ietf.org/html/rfc7234">Hypertext Transfer Protocol (HTTP/1.1): Caching</a>. June 2014. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7234">https://tools.ietf.org/html/rfc7234</a>
    <dt id="biblio-rfc7469"><a class="self-link" href="#biblio-rfc7469"></a>[RFC7469]
    <dd>C. Evans; C. Palmer; R. Sleevi. <a href="https://tools.ietf.org/html/rfc7469">Public Key Pinning Extension for HTTP</a>. April 2015. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc7469">https://tools.ietf.org/html/rfc7469</a>
   </dl>

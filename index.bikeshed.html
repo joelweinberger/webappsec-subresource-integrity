@@ -10,11 +10,11 @@
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="http://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Subresource Integrity</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Candidate Recommendation, <time class="dt-updated" datetime="2015-11-03">3 November 2015</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Candidate Recommendation, <time class="dt-updated" datetime="2015-11-04">4 November 2015</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="http://www.w3.org/TR/2015/CR-SRI-1-20151103/">http://www.w3.org/TR/2015/CR-SRI-1-20151103/</a>
+     <dd><a class="u-url" href="http://www.w3.org/TR/2015/CR-SRI-1-20151104/">http://www.w3.org/TR/2015/CR-SRI-1-20151104/</a>
      <dt>Latest version:
      <dd><a href="http://www.w3.org/TR/SRI/">http://www.w3.org/TR/SRI/</a>
      <dt>Editor's Draft:
@@ -24,7 +24,7 @@
      <dt>Version History:
      <dd><a href="https://github.com/w3c/webappsec-subresource-integrity/commits/gh-pages">https://github.com/w3c/webappsec-subresource-integrity/commits/gh-pages</a>
      <dt>Feedback:
-     <dd><span><a href="mailto:public-webappsec@w3.org?subject=%5BSRI%5D%20YOUR%20TOPIC%20HERE">public-webappsec@w3.org</a> with subject line “<kbd>[SRI] <i>… message topic …</i></kbd>” (<a href="http://lists.w3.org/Archives/Public/public-webappsec/" rel="discussion">archives</a>)</span>
+     <dd><span><a href="mailto:public-webappsec@w3.org?subject=%5BSRI%5D%20YOUR%20TOPIC%20HERE">public-webappsec@w3.org</a> with subject line “<kbd>[SRI] <i data-lt="">… message topic …</i></kbd>” (<a href="http://lists.w3.org/Archives/Public/public-webappsec/" rel="discussion">archives</a>)</span>
      <dt>Issue Tracking:
      <dd><a href="https://github.com/metromoxie/webappsec-subresource-integrity/issues/">GitHub</a>
      <dt class="editor">Editors:
@@ -101,12 +101,24 @@ fetched resource has been delivered without unexpected manipulation.</p>
     <li>
      <a href="#framework"><span class="secno">3</span> <span class="content">Framework</span></a>
      <ul class="toc">
-      <li><a href="#metadata"><span class="secno">3.1</span> <span class="content">Integrity metadata</span></a>
+      <li><a href="#integrity-metadata-description"><span class="secno">3.1</span> <span class="content">Integrity metadata</span></a>
       <li>
        <a href="#cryptographic-hash-functions"><span class="secno">3.2</span> <span class="content">Cryptographic hash functions</span></a>
        <ul class="toc">
         <li><a href="#agility"><span class="secno">3.2.1</span> <span class="content">Agility</span></a>
         <li><a href="#priority"><span class="secno">3.2.2</span> <span class="content">Priority</span></a>
+       </ul>
+      <li>
+       <a href="#verification-algorithms"><span class="secno">3.3</span> <span class="content">Response verification algorithms</span></a>
+       <ul class="toc">
+        <li><a href="#apply-algorithm-to-response"><span class="secno">3.3.1</span> <span class="content">Apply <var>algorithm</var> to <var>response</var></span></a>
+        <li><a href="#is-response-eligible"><span class="secno">3.3.2</span> <span class="content">Is <var>response</var> eligible for integrity validation</span></a>
+        <li><a href="#parse-metadata"><span class="secno">3.3.3</span> <span class="content">Parse <var>metadata</var></span></a>
+        <li><a href="#get-the-strongest-metadata"><span class="secno">3.3.4</span> <span class="content">Get the strongest metadata from <var>set</var></span></a>
+        <li><a href="#does-response-match-metadatalist"><span class="secno">3.3.5</span> <span class="content">Does <var>response</var> match <var>metadataList</var></span></a>
+        <li><a href="#integrity-attribute"><span class="secno">3.3.6</span> <span class="content">Integrity attribute</span></a>
+        <li><a href="#hash-collision-attacks"><span class="secno">3.3.7</span> <span class="content">Hash-collision attacks</span></a>
+        <li><a href="#non-secure-contexts"><span class="secno">3.3.8</span> <span class="content">Non-secure contexts remain non-secure</span></a>
        </ul>
      </ul>
     <li>
@@ -186,7 +198,7 @@ this coverage.</p>
   the CDN’s servers deliver <em>only</em> the code the author expects them to
   deliver. To mitigate the risk that a CDN compromise (or unexpectedly
   malicious behavior) would change that site in unfortunate ways, the
-  following <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> is added to the <code>link</code> element included on the page:</p>
+  following <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> is added to the <code>link</code> element included on the page:</p>
      <div class="example" id="example-f65c13cd">
       <a class="self-link" href="#example-f65c13cd"></a> 
 <pre>&lt;link rel="stylesheet" href="https://site53.example.net/style.css"
@@ -197,7 +209,7 @@ this coverage.</p>
     <li data-md="">
      <p>An author wants to include JavaScript provided by a third-party
   analytics service. To ensure that only the code that has been carefully
-  reviewed is executed, the author generates <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> for
+  reviewed is executed, the author generates <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> for
   the script, and adds it to the <code>script</code> element:</p>
      <div class="example" id="example-dbcf36cc">
       <a class="self-link" href="#example-dbcf36cc"></a> 
@@ -209,7 +221,7 @@ this coverage.</p>
     <li data-md="">
      <p>A user agent wishes to ensure that JavaScript code running in high-privilege
   HTML contexts (for example, a browser’s New Tab page) aren’t manipulated
-  before display. <a data-link-type="dfn" href="#integrity-metadata">Integrity metadata</a> mitigates the risk that altered
+  before display. <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">Integrity metadata</a> mitigates the risk that altered
   JavaScript will run in these pages' high-privilege contexts.</p>
    </ul>
    <h2 class="heading settled" data-level="2" id="terms"><span class="secno">2. </span><span class="content">Key Concepts and Terminology</span><a class="self-link" href="#terms"></a></h2>
@@ -217,7 +229,7 @@ this coverage.</p>
    <p>The term <dfn data-dfn-type="dfn" data-noexport="" id="digest">digest<a class="self-link" href="#digest"></a></dfn> refers to the <a data-link-type="dfn" href="#base64-encoding">base64
 encoded</a> result of executing a cryptographic hash function on an arbitrary
 block of data.</p>
-   <p>The term <dfn data-dfn-type="dfn" data-noexport="" id="origin">origin<a class="self-link" href="#origin"></a></dfn> is defined in the Origin specification. <a data-link-type="biblio" href="#biblio-rfc6454">[RFC6454]</a></p>
+   <p>The terms <dfn data-dfn-type="dfn" data-noexport="" id="origin">origin<a class="self-link" href="#origin"></a></dfn>, <dfn data-dfn-type="dfn" data-noexport="" id="cross-origin">cross-origin<a class="self-link" href="#cross-origin"></a></dfn>, and <dfn data-dfn-type="dfn" data-noexport="" id="same-origin">same-origin<a class="self-link" href="#same-origin"></a></dfn> are defined by the Origin specification. <a data-link-type="biblio" href="#biblio-origin">[ORIGIN]</a></p>
    <p>The <dfn data-dfn-type="dfn" data-noexport="" id="representation-data">representation data<a class="self-link" href="#representation-data"></a></dfn> and <dfn data-dfn-type="dfn" data-noexport="" id="content-encoding">content encoding<a class="self-link" href="#content-encoding"></a></dfn> of a resource
 are defined by <a href="https://tools.ietf.org/html/rfc7231#section-3">Section 3
 of RFC 7231</a>. <a data-link-type="biblio" href="#biblio-rfc7231">[RFC7231]</a></p>
@@ -237,22 +249,23 @@ characters</code></a>. <a data-link-type="biblio" href="#biblio-html5">[HTML5]</
 generating a sufficiently strong cryptographic digest for a resource, and
 transmitting that digest to a user agent so that it may be used to verify the
 response.</p>
-   <h3 class="heading settled" data-level="3.1" id="metadata"><span class="secno">3.1. </span><span class="content">Integrity metadata</span><a class="self-link" href="#metadata"></a></h3>
-   <p>To verify the integrity of a response, a user agent requires <dfn data-dfn-type="dfn" data-noexport="" id="integrity-metadata">integrity
-metadata<a class="self-link" href="#integrity-metadata"></a></dfn> as part of the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">request</a>. This metadata consists of the
+   <h3 class="heading settled" data-level="3.1" id="integrity-metadata-description"><span class="secno">3.1. </span><span class="content">Integrity metadata</span><a class="self-link" href="#integrity-metadata-description"></a></h3>
+   <p>To verify the integrity of a response, a user agent requires <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity
+metadata</a> as part of the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request">request</a>. This metadata consists of the
 following pieces of information:</p>
    <ul>
     <li data-md="">
-     <p>cryptographic hash function ("<code>alg</code>")</p>
+     <p><var>alg</var>, a <a href="#cryptographic-hash-functions">cryptographic hash
+function</a></p>
     <li data-md="">
-     <p><a data-link-type="dfn" href="#digest">digest</a> ("<code>val</code>")</p>
+     <p><var>val</var>, a <a data-link-type="dfn" href="#digest">digest</a></p>
     <li data-md="">
-     <p>options ("<code>opt</code>")</p>
+     <p><var>opt</var>, options</p>
    </ul>
    <p>The hash function and digest MUST be provided in order to validate a
 response’s integrity.</p>
-   <div class="note" role="note"> At the moment, no options are defined. However, future versions of
-the spec may define options, such as MIME types. <a data-link-type="biblio" href="#biblio-mime-types">[MIME-TYPES]</a> </div>
+   <p class="note" role="note">Note: At the moment, no options are defined so <var>opt</var> is unused.
+However, future versions of the spec may define options, such as MIME types. <a data-link-type="biblio" href="#biblio-mime-types">[MIME-TYPES]</a></p>
    <p>This metadata MUST be encoded in the same format as the <a data-link-type="dfn" href="http://www.w3.org/TR/CSP2#source-list-syntax"><code>hash-source</code></a> (without the single quotes) in <a data-link-type="biblio" href="#biblio-csp2">[CSP2]</a>.</p>
    <p>For example, given a script resource containing only the string <code>\"alert(\'Hello, world.\');\"</code>, an author might choose <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-384</a> as a hash
 function. <code>H8BRh8j48O9oYatfu5AZzq6A9RINhZO5H16dQZngK7T62em8MUt1FLm52t+eX6xO</code> is
@@ -264,23 +277,22 @@ can be encoded as follows:</p>
 </pre>
    </div>
    <div class="note" role="note">
-     Digests may be generated using any number of utilities. <a href="https://openssl.org/">OpenSSL</a>, for example, is quite commonly
-available. The example in this section is the result of the following command
-line: 
+     Note: Digests may be generated using any number of utilities. <a href="https://openssl.org/">OpenSSL</a>, for example, is quite commonly
+  available. The example in this section is the result of the following command
+  line: 
 <pre>echo -n "alert('Hello, world.');" | openssl dgst -sha384 -binary | openssl base64 -A
 </pre>
    </div>
    <h3 class="heading settled" data-level="3.2" id="cryptographic-hash-functions"><span class="secno">3.2. </span><span class="content">Cryptographic hash functions</span><a class="self-link" href="#cryptographic-hash-functions"></a></h3>
    <p>Conformant user agents MUST support the <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-256</a>, <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-384</a>,
 and <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-512</a> cryptographic hash functions for use as part of a
-request’s <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> and MAY support additional hash functions.</p>
+request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> and MAY support additional hash functions.</p>
    <p>User agents SHOULD refuse to support known-weak hashing functions like <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc1321.txt#">MD5</a> or <a data-link-type="dfn" href="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf#">SHA-1</a> and SHOULD restrict supported hashing functions to
 those known to be collision-resistant. Additionally, user agents SHOULD
 re-evaluate their supported hash functions on a regular basis and deprecate
-support for those functions that have become insecure. See
-[#hash-collision-attacks].</p>
+support for those functions that have become insecure. See <a href="#hash-collision-attacks">§3.3.7 Hash-collision attacks</a>.</p>
    <h4 class="heading settled" data-level="3.2.1" id="agility"><span class="secno">3.2.1. </span><span class="content">Agility</span><a class="self-link" href="#agility"></a></h4>
-   <p>Multiple sets of <a data-link-type="dfn" href="#integrity-metadata">integrity metadata</a> may be associated with a single
+   <p>Multiple sets of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a> may be associated with a single
 resource in order to provide agility in the face of future cryptographic
 discoveries.  For example, the resource described in the previous section may be
 described by either of the following hash expressions:</p>
@@ -290,7 +302,7 @@ described by either of the following hash expressions:</p>
 sha512-Q2bFTOhEALkN8hOms2FKTDLy7eugP2zFZ1T8LCvX42Fp3WoNr3bjZSAHeOsHrbV1Fu9/A0EzCinRE7Af1ofPrw==
 </pre>
    </div>
-   <p>Authors may choose to specify both, for example:</p>
+   <p>Authors may choose to specify both. For example:</p>
    <div class="example" id="example-ffb16d19">
     <a class="self-link" href="#example-ffb16d19"></a> 
 <pre>&lt;script src="hello_world.js"
@@ -300,24 +312,181 @@ sha512-Q2bFTOhEALkN8hOms2FKTDLy7eugP2zFZ1T8LCvX42Fp3WoNr3bjZSAHeOsHrbV1Fu9/A0EzC
 </pre>
    </div>
    <p>In this case, the user agent will choose the strongest hash function in the
-list, and use that metadata to validate the response (as described below in the <a data-link-type="dfn" href="#parse-metadata">parse metadata</a> and <a data-link-type="dfn" href="#get-the-strongest-metadata-from-set">get the strongest metadata from set</a> algorithms).</p>
+list, and use that metadata to validate the response (as described below in the <a href="#parse-metadata">§3.3.3 Parse metadata</a> and <a href="#get-the-strongest-metadata">§3.3.4 Get the strongest metadata from set</a> algorithms).</p>
    <p>When a hash function is determined to be insecure, user agents SHOULD deprecate
 and eventually remove support for integrity validation using the insecure hash
 function. User agents MAY check the validity of responses using a digest based
 on a deprecated function.</p>
    <p>To allow authors to switch to stronger hash functions without being held back by
 older user agents, validation using unsupported hash functions acts like no
-integrity value was provided (see the <a data-link-type="dfn" href="#does-response-match-metadatalist">Does response match metadataList</a> algorithm below).  Authors  are encouraged to use strong hash functions, and to
+integrity value was provided (see the <a href="#does-response-match-metadatalist">§3.3.5 Does response match metadataList</a> algorithm below).  Authors  are encouraged to use strong hash functions and to
 begin migrating to stronger hash functions as they become available.</p>
    <h4 class="heading settled" data-level="3.2.2" id="priority"><span class="secno">3.2.2. </span><span class="content">Priority</span><a class="self-link" href="#priority"></a></h4>
    <p>User agents must provide a mechanism for determining the relative priority of
 two hash functions and return the empty string if the priority is equal. That
 is, if a user agent implemented a function like <dfn data-dfn-type="dfn" data-noexport="" id="getprioritizedhashfunction">getPrioritizedHashFunction<a class="self-link" href="#getprioritizedhashfunction"></a></dfn>(a, b) it would return the hash function
 the user agent considers the most collision-resistant.  For example, <code>getPrioritizedHashFunction('sha256', 'sha512')</code> would return <code>'sha512'</code> and <code>getPrioritizedHashFunction('sha256', 'sha256')</code> would return the empty string.</p>
-   <div class="note" role="note"> The <a data-link-type="dfn" href="#getprioritizedhashfunction">getPrioritizedHashFunction</a> is an internal implementation detail.
-  It is not an API that implementors provide to web applications. It is used in
-  this document only to simplify the algorithm description. </div>
-   <p><dfn data-dfn-type="dfn" data-noexport="" id="parse-metadata">parse metadata<a class="self-link" href="#parse-metadata"></a></dfn> <dfn data-dfn-type="dfn" data-noexport="" id="get-the-strongest-metadata-from-set">get the strongest metadata from set<a class="self-link" href="#get-the-strongest-metadata-from-set"></a></dfn> <dfn data-dfn-type="dfn" data-noexport="" id="does-response-match-metadatalist">does response match metadatalist<a class="self-link" href="#does-response-match-metadatalist"></a></dfn></p>
+   <p class="note" role="note">Note: The <a data-link-type="dfn" href="#getprioritizedhashfunction">getPrioritizedHashFunction</a> is an internal implementation
+detail.  It is not an API that implementors provide to web applications. It is
+used in this document only to simplify the algorithm description.</p>
+   <h3 class="heading settled" data-level="3.3" id="verification-algorithms"><span class="secno">3.3. </span><span class="content">Response verification algorithms</span><a class="self-link" href="#verification-algorithms"></a></h3>
+   <h4 class="heading settled" data-level="3.3.1" id="apply-algorithm-to-response"><span class="secno">3.3.1. </span><span class="content">Apply <var>algorithm</var> to <var>response</var></span><a class="self-link" href="#apply-algorithm-to-response"></a></h4>
+   <ol>
+    <li data-md="">
+     <p>Let <var>result</var> be the result of applying <var>algorithm</var> to the <a data-link-type="dfn" href="#representation-data">representation data</a> of <var>response</var> without any
+  content-codings applied, except when the user agent intends to consume the
+  content with content-encodings applied. In the latter case, let <var>result</var> be the result of applying <var>algorithm</var> to the <a data-link-type="dfn" href="#representation-data">representation data</a></p>
+    <li data-md="">
+     <p>Let <var>encodedResult</var> be the result of <a data-link-type="dfn" href="#base64-encoding">base64 encoding</a> <var>result</var>.</p>
+    <li data-md="">
+     <p>Return <var>encodedResult</var>.</p>
+   </ol>
+   <h4 class="heading settled" data-level="3.3.2" id="is-response-eligible"><span class="secno">3.3.2. </span><span class="content">Is <var>response</var> eligible for integrity validation</span><a class="self-link" href="#is-response-eligible"></a></h4>
+   <p>In order to mitigate an attacker’s ability to read data <a data-link-type="dfn" href="#cross-origin">cross-origin</a> by
+brute-forcing values via integrity checks, responses are only eligible for such
+checks if they are <a data-link-type="dfn" href="#same-origin">same-origin</a> or are the result of explicit access
+granted to the loading origin via Cross-Origin Resource Sharing. <a data-link-type="biblio" href="#biblio-cors">[CORS]</a></p>
+   <p class="note" role="note">Note: As noted in <a href="https://tools.ietf.org/html/rfc6454#section-4">Section 4
+of RFC 6454</a>, some user agents use globally unique identifiers for each
+file URI. <a data-link-type="biblio" href="#biblio-rfc6454">[RFC6454]</a> This means that resources accessed over a <code>file</code> scheme
+URL are unlikely to be eligible for integrity checks.</p>
+   <p class="note" role="note">Note: Being in a <a data-link-type="dfn" href="&quot;http://www.w3.org/TR/powerful-features/&quot;#secure-context">Secure Context</a> (e.g., a document delivered over HTTPS)
+is not necessary for the use of integrity validation. Because resource
+integrity is only an application level security tool, and it does not change
+the security state of the user agent, a Secure Context is unnecessary. However,
+if integrity is used in something other than a Secure Context (e.g., a document
+delivered over HTTP), authors should be aware that the integrity provides <em>no security guarantees at all</em>. For this reason, authors should only
+deliver integrity metadata in a Secure Context. See <a href="#non-secure-contexts">§3.3.8 Non-secure contexts remain non-secure</a> for more discussion.</p>
+   <p>The following algorithm details these restrictions:</p>
+   <ol>
+    <li data-md="">
+     <p>Let <var>response</var> be the response that results from <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-fetch">fetching</a> the resource.</p>
+    <li data-md="">
+     <p>If the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-response-type"><var>response</var> type</a> is <code>basic</code>, <code>cors</code> or <code>default</code>,
+  return <code>true</code>.</p>
+    <li data-md="">
+     <p>Return <code>false</code>.</p>
+   </ol>
+   <div class="note" role="note">
+     Note: The <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-response-type">response types</a> are defined by the Fetch
+  specification <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> and refer to the following: 
+    <ul>
+     <li data-md="">
+      <p><code>basic</code> is a <a data-link-type="dfn" href="#same-origin">same-origin</a> response, and thus the requestor has full
+ access to read the body.</p>
+     <li data-md="">
+      <p><code>cors</code> is a valid response to a <a data-link-type="dfn" href="#cross-origin">cross-origin</a>, CORS-enabled request,
+ and thus the requestor has full access to read the body.</p>
+     <li data-md="">
+      <p><code>default</code> is a valid response that is generated by a Service Worker as a
+response to the request, so its body is fully readable by the requestor.</p>
+    </ul>
+   </div>
+   <p class="note" role="note">Note: Since the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org#concept-response-type">response type</a> for data URLs will always be <code>opaque</code> for <code>script</code> and <code>link</code> elements, such URLs are never eligible for integrity
+checks.  Blob URLs on the other hand are usually considered <a data-link-type="dfn" href="#same-origin">same-origin</a> and therefore are eligible for integrity checks.</p>
+   <h4 class="heading settled" data-level="3.3.3" id="parse-metadata"><span class="secno">3.3.3. </span><span class="content">Parse <var>metadata</var></span><a class="self-link" href="#parse-metadata"></a></h4>
+   <p>This algorithm accepts a string, and returns either <code>no metadata</code>, or a set of
+valid hash expressions whose hash functions are understood by the user agent.</p>
+   <ol>
+    <li data-md="">
+     <p>Let <var>result</var> be the empty set.</p>
+    <li data-md="">
+     <p>Let <var>empty</var> be equal to <code>true</code>.</p>
+    <li data-md="">
+     <p>For each <var>token</var> returned by <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#split-a-string-on-spaces">splitting <var>metadata</var> on spaces</a>:</p>
+     <ol>
+      <li data-md="">
+       <p>Set <var>empty</var> to <code>false</code>.</p>
+      <li data-md="">
+       <p>If <var>token</var> is not a valid metadata, skip the remaining
+  steps, and proceed to the next token.</p>
+      <li data-md="">
+       <p>Parse <var>token</var> per the grammar in <a href="#integrity-attribute">§3.3.6 Integrity attribute</a>.</p>
+      <li data-md="">
+       <p>Let <var>algorithm</var> be the <var>alg</var> component of <var>token</var>.</p>
+      <li data-md="">
+       <p>If <var>algorithm</var> is a hash function recognized by the user
+  agent, add the parsed <var>token</var> to <var>result</var>.</p>
+     </ol>
+    <li data-md="">
+     <p>Return <code>no metadata</code> if <var>empty</var> is <code>true</code>, otherwise return <var>result</var>.</p>
+   </ol>
+   <h4 class="heading settled" data-level="3.3.4" id="get-the-strongest-metadata"><span class="secno">3.3.4. </span><span class="content">Get the strongest metadata from <var>set</var></span><a class="self-link" href="#get-the-strongest-metadata"></a></h4>
+   <ol>
+    <li data-md="">
+     <p>Let <var>result</var> be the empty set and <var>strongest</var> be the empty
+  string.</p>
+    <li data-md="">
+     <p>For each <var>item</var> in <var>set</var>:</p>
+     <ol>
+      <li data-md="">
+       <p>If <var>result</var> is the empty set, add <var>item</var> to <var>result</var> and set <var>strongest</var> to <var>item</var>, skip
+  to the next <var>item</var>.</p>
+      <li data-md="">
+       <p>Let <var>currentAlgorithm</var> be the <var>alg</var> component of <var>strongest</var>.</p>
+      <li data-md="">
+       <p>Let <var>newAlgorithm</var> be the <var>alg</var> component of <var>item</var>.</p>
+      <li data-md="">
+       <p>If the result of the user agent’s <a data-link-type="dfn" href="#getprioritizedhashfunction">getPrioritizedHashFunction</a> applied to <var>currentAlgorithm</var> and <var>newAlgorithm</var> is
+  the empty string, add <var>item</var> to <var>result</var>. If the
+  result is <var>newAlgorithm</var>, set <var>strongest</var> to <var>item</var>, set <var>result</var> to the empty set, and add <var>item</var> to <var>result</var>.</p>
+     </ol>
+    <li data-md="">
+     <p>Return <var>result</var>.</p>
+   </ol>
+   <h4 class="heading settled" data-level="3.3.5" id="does-response-match-metadatalist"><span class="secno">3.3.5. </span><span class="content">Does <var>response</var> match <var>metadataList</var></span><a class="self-link" href="#does-response-match-metadatalist"></a></h4>
+   <ol>
+    <li data-md="">
+     <p>Let <var>parsedMetadata</var> be the result of <a href="#parse-metadata">§3.3.3 Parse metadata</a> on <var>metadataList</var>.</p>
+    <li data-md="">
+     <p>If <var>parsedMetadata</var> is <code>no metadata</code>, return <code>true</code>.</p>
+    <li data-md="">
+     <p>If <a href="#is-response-eligible">§3.3.2 Is response eligible for integrity validation</a> applied to <var>response</var> returns <code>false</code>,
+  return <code>false</code>.</p>
+    <li data-md="">
+     <p>If <var>parsedMetadata</var> is the empty set, return <code>true</code>.</p>
+    <li data-md="">
+     <p>Let <var>metadata</var> be the result of <a href="#get-the-strongest-metadata">§3.3.4 Get the strongest metadata from set</a> applied to <var>parsedMetadata</var>.</p>
+    <li data-md="">
+     <p>For each <var>item</var> in <var>metadata</var>:</p>
+     <ol>
+      <li data-md="">
+       <p>Let <var>algorithm</var> be the <var>alg</var> component of <var>item</var>.</p>
+      <li data-md="">
+       <p>Let <var>expectedValue</var> be the <var>val</var> component of <var>item</var>.</p>
+      <li data-md="">
+       <p>Let <var>actualValue</var> be the result of executing <a href="#apply-algorithm-to-response">§3.3.1 Apply algorithm to response</a> on <var>response</var>.</p>
+      <li data-md="">
+       <p>If <var>actualValue</var> is a case-sensitive match for <var>expectedValue</var>, return <code>true</code>.</p>
+     </ol>
+    <li data-md="">
+     <p>Return <code>false</code>.</p>
+   </ol>
+   <p>This algorithm allows the user agent to accept multiple, valid strong hash
+functions. For example, a developer might write a <code>script</code> element such as:</p>
+   <div class="example" id="example-a26a9f25">
+    <a class="self-link" href="#example-a26a9f25"></a> 
+<pre>&lt;script src="https://example.com/example-framework.js"
+        integrity="sha384-Li9vy3DqF8tnTXuiaAJuML3ky+er10rcgNR/VqsVpcw+ThHmYcwiB1pbOxEbzJr7
+                   sha384-+/M6kredJcxdsqkczBUjMLvqyHb1K/JThDXWsBVxMEeZHEaMKEOEct339VItX1zB"
+        crossorigin="anonymous">&lt;/script>
+</pre>
+   </div>
+   <p>which would allow the user agent to accept two different content payloads, one
+of which matches the first SHA-384 hash value and the other matches the second
+SHA-384 hash value.</p>
+   <p class="note" role="note">Note: User agents may allow users to modify the result of this algorithm via
+user preferences, bookmarklets, third-party additions to the user agent, and
+other such mechanisms. For example, redirects generated by an extension like <a href="https://www.eff.org/https-everywhere">HTTPS Everywhere</a> could load and
+execute correctly, even if the HTTPS version of a resource differs from the
+HTTP version.</p>
+   <p class="note" role="note">Note: This algorithm returns <code>false</code> if the <a href="#is-response-eligible">§3.3.2 Is response eligible for integrity validation</a> returns <code>false</code> for <var>response</var> since Subresource Integrity requires CORS, and
+it is a logical error to attempt to use it without CORS. Additionally, user
+agents SHOULD report a warning message to the developer console to explain this
+failure.</p>
+   <h4 class="heading settled" data-level="3.3.6" id="integrity-attribute"><span class="secno">3.3.6. </span><span class="content">Integrity attribute</span><a class="self-link" href="#integrity-attribute"></a></h4>
+   <h4 class="heading settled" data-level="3.3.7" id="hash-collision-attacks"><span class="secno">3.3.7. </span><span class="content">Hash-collision attacks</span><a class="self-link" href="#hash-collision-attacks"></a></h4>
+   <h4 class="heading settled" data-level="3.3.8" id="non-secure-contexts"><span class="secno">3.3.8. </span><span class="content">Non-secure contexts remain non-secure</span><a class="self-link" href="#non-secure-contexts"></a></h4>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -355,15 +524,12 @@ the user agent considers the most collision-resistant.  For example, <code>getPr
   <ul class="indexlist">
    <li><a href="#base64-encoding">base64 encoding</a><span>, in §2</span>
    <li><a href="#content-encoding">content encoding</a><span>, in §2</span>
+   <li><a href="#cross-origin">cross-origin</a><span>, in §2</span>
    <li><a href="#digest">digest</a><span>, in §2</span>
-   <li><a href="#does-response-match-metadatalist">does response match metadatalist</a><span>, in §3.2.2</span>
    <li><a href="#getprioritizedhashfunction">getPrioritizedHashFunction</a><span>, in §3.2.2</span>
-   <li><a href="#get-the-strongest-metadata-from-set">get the strongest metadata from set</a><span>, in §3.2.2</span>
-   <li><a href="#integrity-metadata">integrity
-metadata</a><span>, in §3.1</span>
    <li><a href="#origin">origin</a><span>, in §2</span>
-   <li><a href="#parse-metadata">parse metadata</a><span>, in §3.2.2</span>
    <li><a href="#representation-data">representation data</a><span>, in §2</span>
+   <li><a href="#same-origin">same-origin</a><span>, in §2</span>
    <li><a href="#wsp">WSP</a><span>, in §2.1</span>
   </ul>
   <h3 class="no-num heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -381,11 +547,15 @@ metadata</a><span>, in §3.1</span>
    <li>
     <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> defines the following terms:
     <ul>
-     <li><a href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">request</a>
+     <li><a href="https://fetch.spec.whatwg.org#concept-fetch">fetch</a>
+     <li><a href="https://fetch.spec.whatwg.org#concept-request-integrity-metadata">integrity metadata</a>
+     <li><a href="https://fetch.spec.whatwg.org#concept-request">request</a>
+     <li><a href="https://fetch.spec.whatwg.org#concept-response-type">response type</a>
     </ul>
    <li>
     <a data-link-type="biblio" href="#biblio-html5">[html5]</a> defines the following terms:
     <ul>
+     <li><a href="http://www.w3.org/TR/html5/infrastructure.html#split-a-string-on-spaces">split on spaces</a>
      <li><a href="http://www.w3.org/TR/html5/infrastructure.html#space-character">white_space characters</a>
     </ul>
    <li>
@@ -402,6 +572,11 @@ metadata</a><span>, in §3.1</span>
     <a data-link-type="biblio" href="#biblio-rfc7469">[rfc7469]</a> defines the following terms:
     <ul>
      <li><a href="https://tools.ietf.org/html/rfc7469#section-1">public key pinning</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio" href="#biblio-secure-contexts">[SECURE-CONTEXTS]</a> defines the following terms:
+    <ul>
+     <li><a href="&quot;http://www.w3.org/TR/powerful-features/&quot;#secure-context">secure context</a>
     </ul>
    <li>
     <a data-link-type="biblio" href="#biblio-sha2">[SHA2]</a> defines the following terms:
@@ -422,8 +597,14 @@ metadata</a><span>, in §3.1</span>
    <dd>Mike West; Adam Barth; Daniel Veditz. <a href="http://www.w3.org/TR/CSP2/">Content Security Policy Level 2</a>. 21 July 2015. CR. URL: <a href="http://www.w3.org/TR/CSP2/">http://www.w3.org/TR/CSP2/</a>
    <dt id="biblio-fetch"><a class="self-link" href="#biblio-fetch"></a>[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-origin"><a class="self-link" href="#biblio-origin"></a>[ORIGIN]
+   <dd>A. Barth. <a href="https://tools.ietf.org/html/rfc6454">The Web Origin Concept</a>. December 2011. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6454">https://tools.ietf.org/html/rfc6454</a>
+   <dt id="biblio-secure-contexts"><a class="self-link" href="#biblio-secure-contexts"></a>[SECURE-CONTEXTS]
+   <dd>Mike West; Yan Zhu. <a href="https://w3c.github.io/webappsec-secure-contexts/">Secure Contexts</a>. WD. URL: <a href="https://w3c.github.io/webappsec-secure-contexts/">https://w3c.github.io/webappsec-secure-contexts/</a>
    <dt id="biblio-sha2"><a class="self-link" href="#biblio-sha2"></a>[SHA2]
    <dd><a href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">FIPS PUB 180-4, Secure Hash Standard</a>. URL: <a href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf">http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf</a>
+   <dt id="biblio-cors"><a class="self-link" href="#biblio-cors"></a>[CORS]
+   <dd>Anne van Kesteren. <a href="http://www.w3.org/TR/cors/">Cross-Origin Resource Sharing</a>. 16 January 2014. REC. URL: <a href="http://www.w3.org/TR/cors/">http://www.w3.org/TR/cors/</a>
    <dt id="biblio-html5"><a class="self-link" href="#biblio-html5"></a>[HTML5]
    <dd>Ian Hickson; et al. <a href="http://www.w3.org/TR/html5/">HTML5</a>. 28 October 2014. REC. URL: <a href="http://www.w3.org/TR/html5/">http://www.w3.org/TR/html5/</a>
    <dt id="biblio-rfc1321"><a class="self-link" href="#biblio-rfc1321"></a>[RFC1321]
@@ -432,8 +613,6 @@ metadata</a><span>, in §3.1</span>
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-rfc4648"><a class="self-link" href="#biblio-rfc4648"></a>[RFC4648]
    <dd>S. Josefsson. <a href="https://tools.ietf.org/html/rfc4648">The Base16, Base32, and Base64 Data Encodings</a>. October 2006. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc4648">https://tools.ietf.org/html/rfc4648</a>
-   <dt id="biblio-rfc6454"><a class="self-link" href="#biblio-rfc6454"></a>[RFC6454]
-   <dd>A. Barth. <a href="https://tools.ietf.org/html/rfc6454">The Web Origin Concept</a>. December 2011. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6454">https://tools.ietf.org/html/rfc6454</a>
    <dt id="biblio-rfc6797"><a class="self-link" href="#biblio-rfc6797"></a>[RFC6797]
    <dd>J. Hodges; C. Jackson; A. Barth. <a href="https://tools.ietf.org/html/rfc6797">HTTP Strict Transport Security (HSTS)</a>. November 2012. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6797">https://tools.ietf.org/html/rfc6797</a>
    <dt id="biblio-rfc7231"><a class="self-link" href="#biblio-rfc7231"></a>[RFC7231]
@@ -449,6 +628,8 @@ metadata</a><span>, in §3.1</span>
    <dd>T. Dierks; E. Rescorla. <a href="https://tools.ietf.org/html/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>. August 2008. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc5246">https://tools.ietf.org/html/rfc5246</a>
    <dt id="biblio-rfc1035"><a class="self-link" href="#biblio-rfc1035"></a>[RFC1035]
    <dd>P.V. Mockapetris. <a href="https://tools.ietf.org/html/rfc1035">Domain names - implementation and specification</a>. November 1987. Internet Standard. URL: <a href="https://tools.ietf.org/html/rfc1035">https://tools.ietf.org/html/rfc1035</a>
+   <dt id="biblio-rfc6454"><a class="self-link" href="#biblio-rfc6454"></a>[RFC6454]
+   <dd>A. Barth. <a href="https://tools.ietf.org/html/rfc6454">The Web Origin Concept</a>. December 2011. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6454">https://tools.ietf.org/html/rfc6454</a>
   </dl>
  </body>
 </html>

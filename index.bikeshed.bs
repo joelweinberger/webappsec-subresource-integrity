@@ -566,8 +566,9 @@ the following ABNF grammar:
   ; <a>VCHAR</a> is defined in Appendix B.1 of RFC 5234.
 </pre>
 
-The `integrity` IDL attribute must <a>reflect</a> the `integrity` content
-attribute.
+The {{HTMLLinkElement}} {{HTMLLinkElement/integrity}} and {{HTMLScriptElement}}
+{{HTMLScriptElement/integrity}} IDL attributes must <a>reflect</a> the
+`integrity` content attribute.
 
 `option-expression`s are associated on a per `hash-expression` basis and are
 applied only to the `hash-expression` that immediately precedes it.
@@ -592,7 +593,7 @@ more specific syntax for options, so it is defined here as broadly as possible.
 #### Attributes #### {#HTMLLinkElement-attributes}
 
 : "`integrity`"
-:: The value of this element's `integrity` attribute
+:: The value of this element's `integrity` attribute.
 
 ### HTMLScriptElement ### {#HTMLScriptElement}
 
@@ -605,7 +606,7 @@ more specific syntax for options, so it is defined here as broadly as possible.
 #### Attributes #### {#HTMLScriptElement-attributes}
 
 : "`integrity`"
-:: The value of this element's `integrity` attribute
+:: The value of this element's `integrity` attribute.
 
 ## Handling integrity violations ## {#handling-integrity-violations}
 

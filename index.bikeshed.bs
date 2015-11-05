@@ -394,7 +394,7 @@ used in this document only to simplify the algorithm description.
 
 3.  Return |encodedResult|.
 
-### Is |response| eligible for integrity validation ### {#is-response-eligible}
+### Is |response| eligible for integrity validation? ### {#is-response-eligible}
 
 In order to mitigate an attacker's ability to read data <a>cross-origin</a> by
 brute-forcing values via integrity checks, responses are only eligible for such
@@ -481,7 +481,7 @@ valid hash expressions whose hash functions are understood by the user agent.
         |item| to |result|.
 3.  Return |result|.
 
-### Does |response| match |metadataList| ### {#does-response-match-metadatalist}
+### Does |response| match |metadataList|? ### {#does-response-match-metadatalist}
 
 1.  Let |parsedMetadata| be the result of [[#parse-metadata]] on
     |metadataList|.

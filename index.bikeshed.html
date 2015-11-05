@@ -115,10 +115,10 @@ fetched resource has been delivered without unexpected manipulation.</p>
        <a href="#verification-algorithms"><span class="secno">3.3</span> <span class="content">Response verification algorithms</span></a>
        <ul class="toc">
         <li><a href="#apply-algorithm-to-response"><span class="secno">3.3.1</span> <span class="content">Apply <var>algorithm</var> to <var>response</var></span></a>
-        <li><a href="#is-response-eligible"><span class="secno">3.3.2</span> <span class="content">Is <var>response</var> eligible for integrity validation</span></a>
+        <li><a href="#is-response-eligible"><span class="secno">3.3.2</span> <span class="content">Is <var>response</var> eligible for integrity validation?</span></a>
         <li><a href="#parse-metadata"><span class="secno">3.3.3</span> <span class="content">Parse <var>metadata</var></span></a>
         <li><a href="#get-the-strongest-metadata"><span class="secno">3.3.4</span> <span class="content">Get the strongest metadata from <var>set</var></span></a>
-        <li><a href="#does-response-match-metadatalist"><span class="secno">3.3.5</span> <span class="content">Does <var>response</var> match <var>metadataList</var></span></a>
+        <li><a href="#does-response-match-metadatalist"><span class="secno">3.3.5</span> <span class="content">Does <var>response</var> match <var>metadataList</var>?</span></a>
        </ul>
       <li><a href="#verification-of-html-document-subresources"><span class="secno">3.4</span> <span class="content">Verification of HTML document subresources</span></a>
       <li><a href="#the-integrity-attribute"><span class="secno">3.5</span> <span class="content">The <code>integrity</code> attribute</span></a>
@@ -350,7 +350,7 @@ function. User agents MAY check the validity of responses using a digest based
 on a deprecated function.</p>
    <p>To allow authors to switch to stronger hash functions without being held back by
 older user agents, validation using unsupported hash functions acts like no
-integrity value was provided (see the <a href="#does-response-match-metadatalist">§3.3.5 Does response match metadataList</a> algorithm below).  Authors  are encouraged to use strong hash functions and to
+integrity value was provided (see the <a href="#does-response-match-metadatalist">§3.3.5 Does response match metadataList?</a> algorithm below).  Authors  are encouraged to use strong hash functions and to
 begin migrating to stronger hash functions as they become available.</p>
    <h4 class="heading settled" data-level="3.2.2" id="priority"><span class="secno">3.2.2. </span><span class="content">Priority</span><a class="self-link" href="#priority"></a></h4>
    <p>User agents must provide a mechanism for determining the relative priority of
@@ -372,7 +372,7 @@ used in this document only to simplify the algorithm description.</p>
     <li data-md="">
      <p>Return <var>encodedResult</var>.</p>
    </ol>
-   <h4 class="heading settled" data-level="3.3.2" id="is-response-eligible"><span class="secno">3.3.2. </span><span class="content">Is <var>response</var> eligible for integrity validation</span><a class="self-link" href="#is-response-eligible"></a></h4>
+   <h4 class="heading settled" data-level="3.3.2" id="is-response-eligible"><span class="secno">3.3.2. </span><span class="content">Is <var>response</var> eligible for integrity validation?</span><a class="self-link" href="#is-response-eligible"></a></h4>
    <p>In order to mitigate an attacker’s ability to read data <a data-link-type="dfn" href="#cross-origin">cross-origin</a> by
 brute-forcing values via integrity checks, responses are only eligible for such
 checks if they are <a data-link-type="dfn" href="#same-origin">same-origin</a> or are the result of explicit access
@@ -465,14 +465,14 @@ valid hash expressions whose hash functions are understood by the user agent.</p
     <li data-md="">
      <p>Return <var>result</var>.</p>
    </ol>
-   <h4 class="heading settled" data-level="3.3.5" id="does-response-match-metadatalist"><span class="secno">3.3.5. </span><span class="content">Does <var>response</var> match <var>metadataList</var></span><a class="self-link" href="#does-response-match-metadatalist"></a></h4>
+   <h4 class="heading settled" data-level="3.3.5" id="does-response-match-metadatalist"><span class="secno">3.3.5. </span><span class="content">Does <var>response</var> match <var>metadataList</var>?</span><a class="self-link" href="#does-response-match-metadatalist"></a></h4>
    <ol>
     <li data-md="">
      <p>Let <var>parsedMetadata</var> be the result of <a href="#parse-metadata">§3.3.3 Parse metadata</a> on <var>metadataList</var>.</p>
     <li data-md="">
      <p>If <var>parsedMetadata</var> is <code>no metadata</code>, return <code>true</code>.</p>
     <li data-md="">
-     <p>If <a href="#is-response-eligible">§3.3.2 Is response eligible for integrity validation</a> applied to <var>response</var> returns <code>false</code>,
+     <p>If <a href="#is-response-eligible">§3.3.2 Is response eligible for integrity validation?</a> applied to <var>response</var> returns <code>false</code>,
   return <code>false</code>.</p>
     <li data-md="">
      <p>If <var>parsedMetadata</var> is the empty set, return <code>true</code>.</p>
@@ -511,7 +511,7 @@ user preferences, bookmarklets, third-party additions to the user agent, and
 other such mechanisms. For example, redirects generated by an extension like <a href="https://www.eff.org/https-everywhere">HTTPS Everywhere</a> could load and
 execute correctly, even if the HTTPS version of a resource differs from the
 HTTP version.</p>
-   <p class="note" role="note">Note: This algorithm returns <code>false</code> if the <a href="#is-response-eligible">§3.3.2 Is response eligible for integrity validation</a> returns <code>false</code> for <var>response</var> since Subresource Integrity requires CORS, and
+   <p class="note" role="note">Note: This algorithm returns <code>false</code> if the <a href="#is-response-eligible">§3.3.2 Is response eligible for integrity validation?</a> returns <code>false</code> for <var>response</var> since Subresource Integrity requires CORS, and
 it is a logical error to attempt to use it without CORS. Additionally, user
 agents SHOULD report a warning message to the developer console to explain this
 failure.</p>

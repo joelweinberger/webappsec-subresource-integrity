@@ -7,17 +7,20 @@ TR: http://www.w3.org/TR/SRI/
 Previous Version: http://www.w3.org/TR/2015/WD-SRI-20151006/
 Shortname: SRI
 Level: 1
-Editor: Devdatta Akhawe, Dropbox Inc., dev.akhawe@gmail.com
-Editor: Frederik Braun 68466, Mozilla, fbraun@mozilla.com
-Editor: Francois Marier, Mozilla, francois@mozilla.com
-Editor: Joel Weinberger, Google Inc., jww@google.com
+Editor: Devdatta Akhawe, Dropbox Inc., http://devd.me, dev.akhawe@gmail.com
+Editor: Frederik Braun 68466, Mozilla, https://frederik-braun.com, fbraun@mozilla.com
+Editor: Francois Marier, Mozilla, https://fmarier.org, francois@mozilla.com
+Editor: Joel Weinberger, Google Inc., https://joelweinberger.us, jww@google.com
 Abstract:
   This specification defines a mechanism by which user agents may verify that a
   fetched resource has been delivered without unexpected manipulation.
 Group: webappsec
+Repository: w3c/webappsec-subresource-integrity
 Indent: 2
 Version History: https://github.com/w3c/webappsec-subresource-integrity/commits/gh-pages
-!Participate: <a href="https://github.com/w3c/webappsec-subresource-integrity/issues/new">File a bug </a> (<a href="https://github.com/w3c/webappsec-subresource-integrity/issues">open issues</a>)
+!Implementation status: <a href="https://code.google.com/p/chromium/issues/detail?id=355467">Blink/Chromium</a><br /><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=992096">Gecko</a>
+!Implementation report: <a href="https://github.com/w3c/webappsec-subresource-integrity/wiki/Links">https://github.com/w3c/webappsec-subresource-integrity/wiki/Links</a>
+
 Markup Shorthands: css off, markdown on
 Ignored Vars: src
 </pre>

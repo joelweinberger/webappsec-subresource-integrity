@@ -10,11 +10,11 @@
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="http://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Subresource Integrity</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Candidate Recommendation, <time class="dt-updated" datetime="2015-11-04">4 November 2015</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Candidate Recommendation, <time class="dt-updated" datetime="2015-11-05">5 November 2015</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="http://www.w3.org/TR/2015/CR-SRI-1-20151104/">http://www.w3.org/TR/2015/CR-SRI-1-20151104/</a>
+     <dd><a class="u-url" href="http://www.w3.org/TR/2015/CR-SRI-1-20151105/">http://www.w3.org/TR/2015/CR-SRI-1-20151105/</a>
      <dt>Latest version:
      <dd><a href="http://www.w3.org/TR/SRI/">http://www.w3.org/TR/SRI/</a>
      <dt>Editor's Draft:
@@ -122,8 +122,16 @@ fetched resource has been delivered without unexpected manipulation.</p>
       <li>
        <a href="#interface-extensions"><span class="secno">3.6</span> <span class="content">Element interface extensions</span></a>
        <ul class="toc">
-        <li><a href="#HTMLLinkElement"><span class="secno">3.6.1</span> <span class="content">HTMLLinkElement</span></a>
-        <li><a href="#HTMLScriptElement"><span class="secno">3.6.2</span> <span class="content">HTMLScriptElement</span></a>
+        <li>
+         <a href="#HTMLLinkElement"><span class="secno">3.6.1</span> <span class="content">HTMLLinkElement</span></a>
+         <ul class="toc">
+          <li><a href="#HTMLLinkElement-attributes"><span class="secno">3.6.1.1</span> <span class="content">Attributes</span></a>
+         </ul>
+        <li>
+         <a href="#HTMLScriptElement"><span class="secno">3.6.2</span> <span class="content">HTMLScriptElement</span></a>
+         <ul class="toc">
+          <li><a href="#HTMLScriptElement-attributes"><span class="secno">3.6.2.1</span> <span class="content">Attributes</span></a>
+         </ul>
        </ul>
       <li><a href="#handling-integrity-violations"><span class="secno">3.7</span> <span class="content">Handling integrity violations</span></a>
       <li>
@@ -140,6 +148,7 @@ fetched resource has been delivered without unexpected manipulation.</p>
         <li><a href="#hash-collision-attacks"><span class="secno">3.10.2</span> <span class="content">Hash collision attacks</span></a>
         <li><a href="#cross-origin-data-leakage"><span class="secno">3.10.3</span> <span class="content">Cross-origin data leakage</span></a>
        </ul>
+      <li><a href="#acknowledgements"><span class="secno">3.11</span> <span class="content">Acknowledgements</span></a>
      </ul>
     <li>
      <a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
@@ -509,7 +518,7 @@ embedded into the document, or executed in its context. To support integrity
 metadata for some of these elements, a new <code>integrity</code> attribute is added to
 the list of content attributes for the <code>link</code> and <code>script</code> elements.</p>
    <p>A corresponding <code>integrity</code> IDL attribute which <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#reflect">reflects</a> the value each
-element’s <code>integrity</code> content attribute is added to the <code>HTMLLinkElement</code> and <code>HTMLScriptElement</code> interfaces.</p>
+element’s <code>integrity</code> content attribute is added to the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/semantics.html#htmllinkelement">HTMLLinkElement</a></code> and <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement">HTMLScriptElement</a></code> interfaces. See <a href="#HTMLLinkElement">§3.6.1 HTMLLinkElement</a> and <a href="#HTMLScriptElement">§3.6.2 HTMLScriptElement</a> for these extensions.</p>
    <p class="note" role="note">Note: A future revision of this specification is likely to include integrity
 support for all possible subresources, i.e., <code>a</code>, <code>audio</code>, <code>embed</code>, <code>iframe</code>, <code>img</code>, <code>link</code>, <code>object</code>, <code>script</code>, <code>source</code>, <code>track</code>, and <code>video</code> elements.</p>
    <h3 class="heading settled" data-level="3.5" id="the-integrity-attribute"><span class="secno">3.5. </span><span class="content">The <code>integrity</code> attribute</span><a class="self-link" href="#the-integrity-attribute"></a></h3>
@@ -542,11 +551,25 @@ more specific syntax for options, so it is defined here as broadly as possible.<
   attribute DOMString <dfn class="idl-code" data-dfn-for="HTMLLinkElement" data-dfn-type="attribute" data-export="" data-type="DOMString " id="dom-htmllinkelement-integrity">integrity<a class="self-link" href="#dom-htmllinkelement-integrity"></a></dfn>;
 };
 </pre>
+   <h5 class="heading settled" data-level="3.6.1.1" id="HTMLLinkElement-attributes"><span class="secno">3.6.1.1. </span><span class="content">Attributes</span><a class="self-link" href="#HTMLLinkElement-attributes"></a></h5>
+   <dl>
+    <dt data-md="">
+     <p>"<code>integrity</code>"</p>
+    <dd data-md="">
+     <p>The value of this element’s <code>integrity</code> attribute</p>
+   </dl>
    <h4 class="heading settled" data-level="3.6.2" id="HTMLScriptElement"><span class="secno">3.6.2. </span><span class="content">HTMLScriptElement</span><a class="self-link" href="#HTMLScriptElement"></a></h4>
 <pre class="idl">partial interface <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement">HTMLScriptElement</a> {
   attribute DOMString <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export="" data-type="DOMString " id="dom-htmlscriptelement-integrity">integrity<a class="self-link" href="#dom-htmlscriptelement-integrity"></a></dfn>;
 };
 </pre>
+   <h5 class="heading settled" data-level="3.6.2.1" id="HTMLScriptElement-attributes"><span class="secno">3.6.2.1. </span><span class="content">Attributes</span><a class="self-link" href="#HTMLScriptElement-attributes"></a></h5>
+   <dl>
+    <dt data-md="">
+     <p>"<code>integrity</code>"</p>
+    <dd data-md="">
+     <p>The value of this element’s <code>integrity</code> attribute</p>
+   </dl>
    <h3 class="heading settled" data-level="3.7" id="handling-integrity-violations"><span class="secno">3.7. </span><span class="content">Handling integrity violations</span><a class="self-link" href="#handling-integrity-violations"></a></h3>
    <p>The user agent will refuse to render or execute responses that fail an
 integrity check, instead returning a network error as defined in Fetch. <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a></p>
@@ -621,6 +644,12 @@ static resource. Consider a JSON response that looks like this:</p>
 usernames, and specify those hashes while repeatedly attempting to load the
 document. A successful load would confirm that the attacker has correctly
 guessed the username.</p>
+   <h3 class="heading settled" data-level="3.11" id="acknowledgements"><span class="secno">3.11. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acknowledgements"></a></h3>
+   <p>Much of the content here is inspired heavily by Gervase Markham’s <a href="http://www.gerv.net/security/link-fingerprints/">Link Fingerprints</a> concept as well as WHATWG’s <a href="https://wiki.whatwg.org/wiki/Link_Hashes">Link Hashes</a></p>
+   <p>A special thanks to Mike West of Google, Inc. for his invaluable contributions
+to the initial version of this spec. Additionally, Brad Hill, Anne van
+Kesteren, Jonathan Kingston, Mark Nottingham, Dan Veditz, Eduardo Vela, Tanvi
+Vyas, and Michal Zalewski provided invaluable feedback.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>

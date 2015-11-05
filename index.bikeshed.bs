@@ -536,8 +536,9 @@ metadata for some of these elements, a new `integrity` attribute is added to
 the list of content attributes for the `link` and `script` elements.
 
 A corresponding `integrity` IDL attribute which <a>reflects</a> the value each
-element's `integrity` content attribute is added to the `HTMLLinkElement` and
-`HTMLScriptElement` interfaces.
+element's `integrity` content attribute is added to the {{HTMLLinkElement}} and
+{{HTMLScriptElement}} interfaces. See [[#HTMLLinkElement]] and
+[[#HTMLScriptElement]] for these extensions.
 
 Note: A future revision of this specification is likely to include integrity
 support for all possible subresources, i.e., `a`, `audio`, `embed`, `iframe`,
@@ -585,6 +586,11 @@ more specific syntax for options, so it is defined here as broadly as possible.
   };
 </pre>
 
+#### Attributes #### {#HTMLLinkElement-attributes}
+
+: "`integrity`"
+:: The value of this element's `integrity` attribute
+
 ### HTMLScriptElement ### {#HTMLScriptElement}
 
 <pre class="idl">
@@ -592,6 +598,11 @@ more specific syntax for options, so it is defined here as broadly as possible.
     attribute DOMString integrity;
   };
 </pre>
+
+#### Attributes #### {#HTMLScriptElement-attributes}
+
+: "`integrity`"
+:: The value of this element's `integrity` attribute
 
 ## Handling integrity violations ## {#handling-integrity-violations}
 
@@ -696,3 +707,16 @@ An attacker could precompute hashes for the response with a variety of common
 usernames, and specify those hashes while repeatedly attempting to load the
 document. A successful load would confirm that the attacker has correctly
 guessed the username.
+
+## Acknowledgements ## {#acknowledgements}
+
+Much of the content here is inspired heavily by Gervase Markham's <a
+href="http://www.gerv.net/security/link-fingerprints/">Link Fingerprints</a>
+concept as well as WHATWG's <a
+href="https://wiki.whatwg.org/wiki/Link_Hashes">Link Hashes</a>
+
+A special thanks to Mike West of Google, Inc. for his invaluable contributions
+to the initial version of this spec. Additionally, Brad Hill, Anne van
+Kesteren, Jonathan Kingston, Mark Nottingham, Dan Veditz, Eduardo Vela, Tanvi
+Vyas, and Michal Zalewski provided invaluable feedback.
+</section>

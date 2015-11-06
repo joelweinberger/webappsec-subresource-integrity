@@ -593,7 +593,8 @@ more specific syntax for options, so it is defined here as broadly as possible.
 #### Attributes #### {#HTMLLinkElement-attributes}
 
 : "`integrity`"
-:: The value of this element's `integrity` attribute.
+:: The value of this element's `integrity` attribute. This attribute must
+   <a>reflect</a> the content attribute of the same name.
 
 ### HTMLScriptElement ### {#HTMLScriptElement}
 
@@ -606,7 +607,8 @@ more specific syntax for options, so it is defined here as broadly as possible.
 #### Attributes #### {#HTMLScriptElement-attributes}
 
 : "`integrity`"
-:: The value of this element's `integrity` attribute.
+:: The value of this element's `integrity` attribute. This attribute must
+   <a>reflect</a> the content attribute of the same name.
 
 ## Handling integrity violations ## {#handling-integrity-violations}
 

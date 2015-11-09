@@ -401,10 +401,11 @@ brute-forcing values via integrity checks, responses are only eligible for such
 checks if they are <a>same-origin</a> or are the result of explicit access
 granted to the loading origin via Cross-Origin Resource Sharing. [[!CORS]]
 
-Note: As noted in <a href="https://tools.ietf.org/html/rfc6454#section-4">Section 4
-of RFC 6454</a>, some user agents use globally unique identifiers for each
-file URI. [[RFC6454]] This means that resources accessed over a `file` scheme
-URL are unlikely to be eligible for integrity checks.
+Note: As noted in <a
+href="https://tools.ietf.org/html/rfc6454#section-4">Section 4 of RFC 6454</a>,
+some user agents use globally unique identifiers for each file URI. This means
+that resources accessed over a `file` scheme URL are unlikely to be eligible for
+integrity checks.
 
 Note: Being in a <a>Secure Context</a> (e.g., a document delivered over HTTPS)
 is not necessary for the use of integrity validation. Because resource

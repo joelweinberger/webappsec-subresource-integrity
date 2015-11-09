@@ -10,11 +10,11 @@
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="http://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Subresource Integrity</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Candidate Recommendation, <time class="dt-updated" datetime="2015-11-06">6 November 2015</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Candidate Recommendation, <time class="dt-updated" datetime="2015-11-09">9 November 2015</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="http://www.w3.org/TR/2015/CR-SRI-1-20151106/">http://www.w3.org/TR/2015/CR-SRI-1-20151106/</a>
+     <dd><a class="u-url" href="http://www.w3.org/TR/2015/CR-SRI-1-20151109/">http://www.w3.org/TR/2015/CR-SRI-1-20151109/</a>
      <dt>Latest version:
      <dd><a href="http://www.w3.org/TR/SRI/">http://www.w3.org/TR/SRI/</a>
      <dt>Editor's Draft:
@@ -377,10 +377,10 @@ used in this document only to simplify the algorithm description.</p>
 brute-forcing values via integrity checks, responses are only eligible for such
 checks if they are <a data-link-type="dfn" href="#same-origin">same-origin</a> or are the result of explicit access
 granted to the loading origin via Cross-Origin Resource Sharing. <a data-link-type="biblio" href="#biblio-cors">[CORS]</a></p>
-   <p class="note" role="note">Note: As noted in <a href="https://tools.ietf.org/html/rfc6454#section-4">Section 4
-of RFC 6454</a>, some user agents use globally unique identifiers for each
-file URI. <a data-link-type="biblio" href="#biblio-rfc6454">[RFC6454]</a> This means that resources accessed over a <code>file</code> scheme
-URL are unlikely to be eligible for integrity checks.</p>
+   <p class="note" role="note">Note: As noted in <a href="https://tools.ietf.org/html/rfc6454#section-4">Section 4 of RFC 6454</a>,
+some user agents use globally unique identifiers for each file URI. This means
+that resources accessed over a <code>file</code> scheme URL are unlikely to be eligible for
+integrity checks.</p>
    <p class="note" role="note">Note: Being in a <a data-link-type="dfn" href="&quot;http://www.w3.org/TR/powerful-features/&quot;#secure-context">Secure Context</a> (e.g., a document delivered over HTTPS)
 is not necessary for the use of integrity validation. Because resource
 integrity is only an application level security tool, and it does not change
@@ -840,8 +840,6 @@ Vyas, and Michal Zalewski provided invaluable feedback.</p>
    <dd>T. Dierks; E. Rescorla. <a href="https://tools.ietf.org/html/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>. August 2008. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc5246">https://tools.ietf.org/html/rfc5246</a>
    <dt id="biblio-rfc1035"><a class="self-link" href="#biblio-rfc1035"></a>[RFC1035]
    <dd>P.V. Mockapetris. <a href="https://tools.ietf.org/html/rfc1035">Domain names - implementation and specification</a>. November 1987. Internet Standard. URL: <a href="https://tools.ietf.org/html/rfc1035">https://tools.ietf.org/html/rfc1035</a>
-   <dt id="biblio-rfc6454"><a class="self-link" href="#biblio-rfc6454"></a>[RFC6454]
-   <dd>A. Barth. <a href="https://tools.ietf.org/html/rfc6454">The Web Origin Concept</a>. December 2011. Proposed Standard. URL: <a href="https://tools.ietf.org/html/rfc6454">https://tools.ietf.org/html/rfc6454</a>
   </dl>
   <h2 class="no-num heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl">partial interface <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/semantics.html#htmllinkelement">HTMLLinkElement</a> {

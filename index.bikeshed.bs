@@ -34,6 +34,11 @@ Ignored Vars: src
 spec: ABNF; urlPrefix: https://tools.ietf.org/html/rfc5234
   type: dfn
     text: VCHAR; url: appendix-B.1
+  type: grammar
+    text: ALPHA; url: appendix-B.1
+    text: DIGIT; url: appendix-B.1
+    text: VCHAR; url: appendix-B.1
+    text: WSP; url: appendix-B.1
 
 spec: CSP2; urlPrefix: http://www.w3.org/TR/CSP2
   type: dfn
@@ -63,13 +68,6 @@ spec: HTML5; urlPrefix: http://www.w3.org/TR/html5/
 spec: RFC1321; urlPrefix: https://www.ietf.org/rfc/rfc1321.txt
   type: dfn
     text: MD5; url: #
-
-spec: RFC5234; urlPrefix: https://tools.ietf.org/html/rfc5234
-  type: grammar
-    text: ALPHA; url: appendix-B.1
-    text: DIGIT; url: appendix-B.1
-    text: VCHAR; url: appendix-B.1
-    text: WSP; url: appendix-B.1
 
 spec: RFC6797; urlPrefix: https://tools.ietf.org/html/rfc6797
   type: dfn
